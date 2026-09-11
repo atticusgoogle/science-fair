@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { ChevronLeft, ChevronRight, ArrowRight, Maximize2, Sparkles, Layers, Play, Pause } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Maximize2, Sparkles, Layers, Play, Pause, MessageSquareQuote } from 'lucide-react';
 
 // Curated provocative "What If" speculative questions for the sliding gallery
 const EYE_CATCHING_QUESTIONS = {
@@ -219,11 +219,19 @@ export function SlidingGallery({ projects, onSelectProject }) {
             "{questionData.question}"
           </h2>
 
-          {/* CTA: Unfold 3D Trifold Modal */}
+          {/* CTA: Unfold 3D Trifold Modal & Ask Paper */}
           <div className="promenade-cta-group">
             <button className="promenade-unfold-btn" onClick={() => onSelectProject(currentProject)}>
               <span>Unfold 3D trifold exhibit</span>
               <ArrowRight size={15} />
+            </button>
+            <button
+              className="promenade-ask-btn"
+              onClick={() => onSelectProject(currentProject, { openChat: true })}
+              title="Talk to this research paper in plain English"
+            >
+              <MessageSquareQuote size={15} />
+              <span>Talk to paper</span>
             </button>
           </div>
         </div>

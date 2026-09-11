@@ -21,6 +21,14 @@ export default function App() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Breakthroughs');
+  const [openChatInitially, setOpenChatInitially] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('chat') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [viewMode, setViewMode] = useState(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -29,6 +37,11 @@ export default function App() {
       return 'promenade';
     }
   });
+
+  const handleSelectProject = (project, options = {}) => {
+    setSelectedProject(project);
+    setOpenChatInitially(!!options.openChat);
+  };
 
   // Extract unique categories
   const categories = useMemo(() => {
@@ -111,7 +124,7 @@ export default function App() {
           ) : viewMode === 'promenade' ? (
             <SlidingGallery
               projects={filteredProjects}
-              onSelectProject={(p) => setSelectedProject(p)}
+              onSelectProject={handleSelectProject}
             />
           ) : (
             <div className="trifold-cards-grid">
@@ -119,7 +132,7 @@ export default function App() {
                 <TrifoldCard
                   key={project.id}
                   project={project}
-                  onSelect={(p) => setSelectedProject(p)}
+                  onSelect={handleSelectProject}
                 />
               ))}
             </div>
@@ -131,7 +144,11 @@ export default function App() {
       {selectedProject && (
         <TrifoldModal
           project={selectedProject}
-          onClose={() => setSelectedProject(null)}
+          initialOpenChat={openChatInitially}
+          onClose={() => {
+            setSelectedProject(null);
+            setOpenChatInitially(false);
+          }}
         />
       )}
 

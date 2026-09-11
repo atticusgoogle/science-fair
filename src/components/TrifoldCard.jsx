@@ -83,7 +83,7 @@ export function TrifoldCard({ project, onSelect }) {
       {/* Understated Card Label */}
       <div className="trifold-meta-footer">
         <span className="project-lead">{project.researcher.name.split('&')[0]}</span>
-        <span className="unfold-prompt">Open exhibit →</span>
+        <span className="unfold-prompt">Open exhibit & talk to paper →</span>
       </div>
     </div>
   );

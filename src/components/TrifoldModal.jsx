@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { ExternalLink, Award, Sparkles, X } from 'lucide-react';
+import { InteractivePaperChat } from './InteractivePaperChat';
+import { ExternalLink, Award, Sparkles, X, MessageSquareQuote } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export function TrifoldModal({ project, onClose }) {
+export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   const [isUnfolded, setIsUnfolded] = useState(false);
+  const [showChat, setShowChat] = useState(initialOpenChat);
 
   useEffect(() => {
     // Trigger smooth 3D unfolding animation right after mount
@@ -31,7 +33,7 @@ export function TrifoldModal({ project, onClose }) {
   };
 
   return (
-    <div className="trifold-modal-overlay" onClick={onClose}>
+    <div className={`trifold-modal-overlay ${showChat ? 'drawer-open' : ''}`} onClick={onClose}>
       {/* Fixed Persistent Top-Right Close Button - Always visible regardless of scroll position or screen size */}
       <button
         className="modal-fixed-close-btn"
@@ -50,6 +52,15 @@ export function TrifoldModal({ project, onClose }) {
             {project.category} • {project.year}
           </div>
           <div className="top-bar-actions">
+            <button
+              className={`action-pill-btn chat ${showChat ? 'active' : ''}`}
+              onClick={() => setShowChat(!showChat)}
+              title="Talk to this research paper & ask questions in plain English"
+            >
+              <MessageSquareQuote size={14} />
+              <span>{showChat ? 'Hide Q&A' : 'Talk to paper'}</span>
+              <span className="live-chat-dot" />
+            </button>
             <a
               href={project.paperUrl}
               target="_blank"
@@ -192,6 +203,24 @@ export function TrifoldModal({ project, onClose }) {
                 <span className="quote-author">— {project.researcher.name}</span>
               </div>
 
+              {/* Interactive Paper Inquiry Card */}
+              <div
+                className="interactive-inquiry-card"
+                onClick={() => setShowChat(true)}
+                title="Ask the paper questions in plain English"
+              >
+                <div className="inquiry-icon-wrap">
+                  <MessageSquareQuote size={16} />
+                </div>
+                <div className="inquiry-content">
+                  <div className="inquiry-title-row">
+                    <strong>Talk to this Paper</strong>
+                    <span className="inquiry-badge">Interactive AI</span>
+                  </div>
+                  <p>Ask anything about this research in plain English — from simple analogies to deep technical proofs ↗</p>
+                </div>
+              </div>
+
               {/* Primary Research Publication Card */}
               <a
                 href={project.paperUrl}
@@ -210,6 +239,16 @@ export function TrifoldModal({ project, onClose }) {
           </div>
         </div>
       </div>
+
+      {/* Slide-out Interactive Research Paper Chat Drawer */}
+      {showChat && (
+        <div className="modal-chat-drawer" onClick={(e) => e.stopPropagation()}>
+          <InteractivePaperChat
+            project={project}
+            onClose={() => setShowChat(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
