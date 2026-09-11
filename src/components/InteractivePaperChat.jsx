@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PAPER_KNOWLEDGE_BASE, queryPaperKnowledge, askGeminiAPI } from '../data/paperKnowledgeBase';
 import { Send, Sparkles, Volume2, VolumeX, Copy, Check, Key, X, Lightbulb, Bot, User, RefreshCw } from 'lucide-react';
 
-export function InteractivePaperChat({ project, onClose }) {
+export function InteractivePaperChat({ project, embedded = false, onClose, onSwitchToFindings }) {
   const kb = PAPER_KNOWLEDGE_BASE[project.id] || {
     researchers: project.researcher.name,
     paperTitle: project.title,
@@ -162,7 +162,7 @@ export function InteractivePaperChat({ project, onClose }) {
   };
 
   return (
-    <div className="paper-chat-container">
+    <div className={`paper-chat-container ${embedded ? 'embedded' : ''}`}>
       {/* Top Header */}
       <div className="paper-chat-header">
         <div className="chat-header-info">

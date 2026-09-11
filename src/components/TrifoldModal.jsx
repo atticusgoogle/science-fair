@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 
 export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   const [isUnfolded, setIsUnfolded] = useState(false);
-  const [showChat, setShowChat] = useState(initialOpenChat);
+  const [rightPanelTab, setRightPanelTab] = useState(initialOpenChat ? 'chat' : 'chat');
 
   useEffect(() => {
     // Trigger smooth 3D unfolding animation right after mount
@@ -33,7 +33,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   };
 
   return (
-    <div className={`trifold-modal-overlay ${showChat ? 'drawer-open' : ''}`} onClick={onClose}>
+    <div className="trifold-modal-overlay" onClick={onClose}>
       {/* Fixed Persistent Top-Right Close Button - Always visible regardless of scroll position or screen size */}
       <button
         className="modal-fixed-close-btn"
@@ -53,13 +53,13 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
           </div>
           <div className="top-bar-actions">
             <button
-              className={`action-pill-btn chat ${showChat ? 'active' : ''}`}
-              onClick={() => setShowChat(!showChat)}
-              title="Talk to this research paper & ask questions in plain English"
+              className={`action-pill-btn chat ${rightPanelTab === 'chat' ? 'active' : ''}`}
+              onClick={() => setRightPanelTab(rightPanelTab === 'chat' ? 'findings' : 'chat')}
+              title="Toggle between interactive Q&A and full exhibit findings on the right panel"
             >
               <MessageSquareQuote size={14} />
-              <span>{showChat ? 'Hide Q&A' : 'Talk to paper'}</span>
-              <span className="live-chat-dot" />
+              <span>{rightPanelTab === 'chat' ? 'Exhibit data' : 'Talk to paper'}</span>
+              {rightPanelTab === 'chat' && <span className="live-chat-dot" />}
             </button>
             <a
               href={project.paperUrl}
@@ -176,79 +176,133 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                 </div>
               )}
 
-              <div className="section-block">
-                <span className="panel-eyebrow">Results & scale</span>
-                <div className="stats-stack">
-                  {project.rightPanel.stats.map((st, idx) => (
-                    <div key={idx} className="stat-card">
-                      <strong className="stat-big">{st.value}</strong>
-                      <span className="stat-sub">{st.label}</span>
-                    </div>
-                  ))}
-                </div>
+              {/* Integrated Panel Mode Tabs */}
+              <div className="right-panel-tab-bar">
+                <button
+                  type="button"
+                  className={`panel-tab-btn ${rightPanelTab === 'chat' ? 'active' : ''}`}
+                  onClick={() => setRightPanelTab('chat')}
+                >
+                  <MessageSquareQuote size={13} />
+                  <span>Talk to Paper</span>
+                  <span className="live-dot-mini" />
+                </button>
+                <button
+                  type="button"
+                  className={`panel-tab-btn ${rightPanelTab === 'findings' ? 'active' : ''}`}
+                  onClick={() => setRightPanelTab('findings')}
+                >
+                  <Sparkles size={13} />
+                  <span>Results & Impact</span>
+                </button>
               </div>
 
-              <div className="section-block">
-                <span className="panel-eyebrow">Real-world impact</span>
-                <ul className="bullet-list">
-                  {project.rightPanel.impactPoints.map((pt, i) => (
-                    <li key={i}>{pt}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Researcher Direct Quote */}
-              <div className="researcher-quote-box">
-                <p className="quote-text">"{project.researcher.quote}"</p>
-                <span className="quote-author">— {project.researcher.name}</span>
-              </div>
-
-              {/* Interactive Paper Inquiry Card */}
-              <div
-                className="interactive-inquiry-card"
-                onClick={() => setShowChat(true)}
-                title="Ask the paper questions in plain English"
-              >
-                <div className="inquiry-icon-wrap">
-                  <MessageSquareQuote size={16} />
-                </div>
-                <div className="inquiry-content">
-                  <div className="inquiry-title-row">
-                    <strong>Talk to this Paper</strong>
-                    <span className="inquiry-badge">Interactive AI</span>
+              {rightPanelTab === 'chat' ? (
+                <div className="embedded-chat-wrapper">
+                  {/* Quick Stat Strip */}
+                  <div className="embedded-chat-stat-banner">
+                    {project.rightPanel.stats.map((st, idx) => (
+                      <div key={idx} className="embedded-stat-chip">
+                        <strong className="chip-value">{st.value}</strong>
+                        <span className="chip-label">{st.label}</span>
+                      </div>
+                    ))}
                   </div>
-                  <p>Ask anything about this research in plain English — from simple analogies to deep technical proofs ↗</p>
-                </div>
-              </div>
 
-              {/* Primary Research Publication Card */}
-              <a
-                href={project.paperUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="physical-bridge-card publication-card"
-                title="Read full scientific paper"
-              >
-                <div className="bridge-icon">📄</div>
-                <div>
-                  <strong>Primary Research Publication</strong>
-                  <p>Read the complete peer-reviewed paper in {project.award || 'scientific literature'} ↗</p>
+                  {/* Embedded Compact Chat Station */}
+                  <InteractivePaperChat
+                    project={project}
+                    embedded={true}
+                    onSwitchToFindings={() => setRightPanelTab('findings')}
+                  />
+
+                  {/* Compact Bottom Bridge Links */}
+                  <div className="embedded-chat-bottom-bridge">
+                    <button
+                      type="button"
+                      className="bridge-link-btn"
+                      onClick={() => setRightPanelTab('findings')}
+                    >
+                      View full data & quotes →
+                    </button>
+                    <a
+                      href={project.paperUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bridge-paper-link"
+                      title="Read original publication"
+                    >
+                      📄 Original paper ↗
+                    </a>
+                  </div>
                 </div>
-              </a>
+              ) : (
+                <>
+                  <div className="section-block">
+                    <span className="panel-eyebrow">Results & scale</span>
+                    <div className="stats-stack">
+                      {project.rightPanel.stats.map((st, idx) => (
+                        <div key={idx} className="stat-card">
+                          <strong className="stat-big">{st.value}</strong>
+                          <span className="stat-sub">{st.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="section-block">
+                    <span className="panel-eyebrow">Real-world impact</span>
+                    <ul className="bullet-list">
+                      {project.rightPanel.impactPoints.map((pt, i) => (
+                        <li key={i}>{pt}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Researcher Direct Quote */}
+                  <div className="researcher-quote-box">
+                    <p className="quote-text">"{project.researcher.quote}"</p>
+                    <span className="quote-author">— {project.researcher.name}</span>
+                  </div>
+
+                  {/* Interactive Paper Inquiry Card */}
+                  <div
+                    className="interactive-inquiry-card"
+                    onClick={() => setRightPanelTab('chat')}
+                    title="Ask the paper questions in plain English"
+                  >
+                    <div className="inquiry-icon-wrap">
+                      <MessageSquareQuote size={16} />
+                    </div>
+                    <div className="inquiry-content">
+                      <div className="inquiry-title-row">
+                        <strong>Talk to this Paper</strong>
+                        <span className="inquiry-badge">Interactive AI</span>
+                      </div>
+                      <p>Ask anything about this research in plain English — from simple analogies to deep technical proofs ↗</p>
+                    </div>
+                  </div>
+
+                  {/* Primary Research Publication Card */}
+                  <a
+                    href={project.paperUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="physical-bridge-card publication-card"
+                    title="Read full scientific paper"
+                  >
+                    <div className="bridge-icon">📄</div>
+                    <div>
+                      <strong>Primary Research Publication</strong>
+                      <p>Read the complete peer-reviewed paper in {project.award || 'scientific literature'} ↗</p>
+                    </div>
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Slide-out Interactive Research Paper Chat Drawer */}
-      {showChat && (
-        <div className="modal-chat-drawer" onClick={(e) => e.stopPropagation()}>
-          <InteractivePaperChat
-            project={project}
-            onClose={() => setShowChat(false)}
-          />
-        </div>
-      )}
     </div>
   );
 }
