@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 
 export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   const [isUnfolded, setIsUnfolded] = useState(false);
-  const [rightPanelTab, setRightPanelTab] = useState(initialOpenChat ? 'chat' : 'chat');
+  const [rightPanelTab, setRightPanelTab] = useState('findings');
 
   useEffect(() => {
     // Trigger smooth 3D unfolding animation right after mount
@@ -55,10 +55,10 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
             <button
               className={`action-pill-btn chat ${rightPanelTab === 'chat' ? 'active' : ''}`}
               onClick={() => setRightPanelTab(rightPanelTab === 'chat' ? 'findings' : 'chat')}
-              title="Toggle between interactive Q&A and full exhibit findings on the right panel"
+              title="Toggle between results and interactive paper Q&A"
             >
               <MessageSquareQuote size={14} />
-              <span>{rightPanelTab === 'chat' ? 'Exhibit data' : 'Talk to paper'}</span>
+              <span>{rightPanelTab === 'chat' ? 'Results & impact' : 'Ask the paper'}</span>
               {rightPanelTab === 'chat' && <span className="live-chat-dot" />}
             </button>
             <a
@@ -180,61 +180,26 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
               <div className="right-panel-tab-bar">
                 <button
                   type="button"
-                  className={`panel-tab-btn ${rightPanelTab === 'chat' ? 'active' : ''}`}
-                  onClick={() => setRightPanelTab('chat')}
-                >
-                  <MessageSquareQuote size={13} />
-                  <span>Talk to Paper</span>
-                  <span className="live-dot-mini" />
-                </button>
-                <button
-                  type="button"
                   className={`panel-tab-btn ${rightPanelTab === 'findings' ? 'active' : ''}`}
                   onClick={() => setRightPanelTab('findings')}
                 >
                   <Sparkles size={13} />
                   <span>Results & Impact</span>
                 </button>
+                <button
+                  type="button"
+                  className={`panel-tab-btn ${rightPanelTab === 'chat' ? 'active' : ''}`}
+                  onClick={() => setRightPanelTab('chat')}
+                >
+                  <MessageSquareQuote size={13} />
+                  <span>Ask the Paper</span>
+                  <span className="live-dot-mini" />
+                </button>
               </div>
 
               {rightPanelTab === 'chat' ? (
-                <div className="embedded-chat-wrapper">
-                  {/* Quick Stat Strip */}
-                  <div className="embedded-chat-stat-banner">
-                    {project.rightPanel.stats.map((st, idx) => (
-                      <div key={idx} className="embedded-stat-chip">
-                        <strong className="chip-value">{st.value}</strong>
-                        <span className="chip-label">{st.label}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Embedded Compact Chat Station */}
-                  <InteractivePaperChat
-                    project={project}
-                    embedded={true}
-                    onSwitchToFindings={() => setRightPanelTab('findings')}
-                  />
-
-                  {/* Compact Bottom Bridge Links */}
-                  <div className="embedded-chat-bottom-bridge">
-                    <button
-                      type="button"
-                      className="bridge-link-btn"
-                      onClick={() => setRightPanelTab('findings')}
-                    >
-                      View full data & quotes →
-                    </button>
-                    <a
-                      href={project.paperUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bridge-paper-link"
-                      title="Read original publication"
-                    >
-                      📄 Original paper ↗
-                    </a>
-                  </div>
+                <div className="embedded-chat-wrapper simple">
+                  <InteractivePaperChat project={project} />
                 </div>
               ) : (
                 <>
