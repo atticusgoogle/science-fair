@@ -1508,14 +1508,63 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.demo-canvas-wrap {
+.demo-stage-card {
   position: relative;
-  border-radius: 4px;
+  width: 100%;
+  max-width: 380px;
+  background: #080b11;
+  border: 1px solid #1e2533;
+  border-radius: 5px;
   overflow: hidden;
-  border: 1px solid #2B2B2B;
+}
+
+.demo-verdict-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(14, 19, 29, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  font-weight: 500;
+  color: #e2e8f0;
+  width: 100%;
+}
+
+.verdict-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.verdict-dot.green {
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.6);
+}
+
+.verdict-dot.red {
+  background: #f87171;
+  box-shadow: 0 0 6px rgba(248, 113, 113, 0.6);
+}
+
+.verdict-dot.cyan {
+  background: #38bdf8;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+}
+
+.verdict-dot.yellow {
+  background: #facc15;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.6);
+}
+
+.verdict-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .demo-drag-hint {
@@ -1524,69 +1573,130 @@ body {
   left: 12px;
   font-size: 10px;
   font-family: var(--font-body);
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.45);
   pointer-events: none;
 }
 
-.demo-controls-bar {
+.demo-control-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 380px;
+  background: #10141e;
+  border: 1px solid #1e2533;
+  border-radius: 5px;
+  padding: 8px 10px;
+}
+
+.demo-segmented-control {
+  display: flex;
+  background: #090c13;
+  border: 1px solid #1c2331;
+  border-radius: 4px;
+  padding: 2px;
+  gap: 2px;
+  width: 100%;
+}
+
+.demo-segment-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #8fa0b5;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.demo-segment-btn:hover:not(.active) {
+  color: #f1f5f9;
+}
+
+.demo-segment-btn.active {
+  background: #202738;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.demo-control-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   width: 100%;
-  background: #181818;
-  padding: 8px 14px;
-  border-radius: 4px;
-  border: 1px solid #2B2B2B;
-  font-size: 12px;
-  color: #CCCCCC;
 }
 
-.demo-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.chip-btn {
-  background: #242424;
-  color: #AAAAAA;
-  border: 1px solid #383838;
-  padding: 4px 10px;
-  font-family: var(--font-display);
+.demo-action-btn {
+  background: #1c2331;
+  color: #c3cfde;
+  border: 1px solid #2d374d;
+  padding: 5px 12px;
   font-size: 11px;
   font-weight: 500;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
 }
 
-.chip-btn:hover {
-  color: #FFFFFF;
-  border-color: #555555;
+.demo-action-btn:hover {
+  color: #ffffff;
+  border-color: #4b5a77;
+  background: #252e40;
 }
 
-.chip-btn.active {
-  background: #FFFFFF;
-  color: #111111;
-  border-color: #FFFFFF;
+.demo-action-btn.primary {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  font-weight: 600;
 }
 
-.status-tag {
-  font-size: 10px;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: #242424;
-  color: #CCCCCC;
-  border: 1px solid #383838;
+.demo-action-btn.primary:hover {
+  background: #0369a1;
+  border-color: #7dd3fc;
 }
 
-.status-tag.green { color: #FFFFFF; background: #222222; }
-.status-tag.red { color: #FFFFFF; background: #222222; }
-.status-tag.yellow { color: #FFFFFF; background: #222222; }
+.demo-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.demo-slider-label {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-slider {
+  flex: 1;
+  accent-color: #38bdf8;
+  cursor: pointer;
+  height: 4px;
+}
+
+.demo-subnote {
+  font-size: 11px;
+  color: #7c8ba1;
+  line-height: 1.45;
+  text-align: center;
+  width: 100%;
+  max-width: 380px;
+}
 
 .dna-blocks-row {
   display: flex;
