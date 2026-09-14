@@ -1,83 +1,65 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { ChevronLeft, ChevronRight, ArrowRight, Maximize2, Sparkles, Layers, Play, Pause, MessageSquareQuote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 
-// Curated provocative "What If" speculative questions for the sliding gallery
-const EYE_CATCHING_QUESTIONS = {
+// Value-forward statements with highlighted breakthrough names (no question framing)
+const VALUE_FORWARD_STATEMENTS = {
   alphafold: {
-    question: "What if we could map the atomic structure of every biomolecule in the living universe?",
-    sub: "AlphaFold 3 predicts the structure and interactions of proteins, DNA, RNA, and ligands with atomic precision.",
-    impactPill: "200M+ Structures Open-Sourced",
-  },
-  gnome: {
-    question: "What if 800 years of new clean tech crystals could be discovered in a single year?",
-    sub: "GNoME synthesized 380,000 new stable crystalline materials for EV batteries, solar panels, and semiconductors.",
-    impactPill: "800 Years of Discovery Accelerated",
-  },
-  graphcast: {
-    question: "What if AI could forecast extreme 10-day global weather in under 60 seconds?",
-    sub: "GraphCast operates at 0.25° resolution, outperforming the world's most powerful numerical supercomputers.",
-    impactPill: "90.3% Targets Outperformed",
-  },
-  fusion: {
-    question: "What if neural networks could contain a 100,000,000 °C star in magnetic coils?",
-    sub: "Autonomous reinforcement learning controls turbulent plasma shape inside the TCV tokamak reactor.",
-    impactPill: "100M °C Plasma Confined",
-  },
-  flood_hub: {
-    question: "What if we could forecast catastrophic river floods 7 days before water crests in 80 nations?",
-    sub: "Flood Hub models rainfall and river discharge to safeguard over 700 million people without physical sensors.",
-    impactPill: "700M+ Vulnerable Citizens Covered",
-  },
-  enformer: {
-    question: "What if 98% of human 'dark DNA' held the regulatory blueprint to cure genetic disease?",
-    sub: "Enformer decodes distal gene expression 100,000 base pairs away from promoters in human and mouse genomes.",
-    impactPill: "100kb Sequence Window Context",
-  },
-  wildfire: {
-    question: "What if satellite heat sensors could pierce dense smoke plumes to map wildfires in real time?",
-    sub: "Fire AI synthesizes geostationary infrared thermal data to track rapidly moving fire lines for first responders.",
-    impactPill: "Real-Time Fireline Mapping",
-  },
-  ferminet: {
-    question: "What if the Schrödinger equation could be solved from pure quantum first principles?",
-    sub: "FermiNet's neural wavefunctions capture antisymmetric electron correlations with sub-millihartree precision.",
-    impactPill: "Quantum First-Principles Accuracy",
-  },
-  alphageometry: {
-    question: "What if an AI could invent creative mathematical proofs at the International Math Olympiad level?",
-    sub: "AlphaGeometry combines a neural language model with a formal deduction engine, solving 25 of 30 Olympiad problems.",
-    impactPill: "25/30 Olympiad Theorems Solved",
+    highlight: 'Alphafold 3',
+    statement: 'accelerates new vaccine candidates for neglected tropical diseases and predicts the 3D atomic structure of all molecules of life',
+    category: 'BIOMOLECULAR & HEALTH'
   },
   bioacoustics: {
-    question: "What if an AI listening to the rainforest could identify endangered species from a single chirp?",
-    sub: "Perch transforms thousands of hours of bioacoustic audio into automated global biodiversity monitoring.",
-    impactPill: "10,000+ Species Cataloged",
+    highlight: 'Perch',
+    statement: 'identifies more than 10,000 species of birds, frogs, and mammals from distant chirps in dense canopies',
+    category: 'CLIMATE & EARTH'
   },
+  gnome: {
+    highlight: 'GNoME',
+    statement: 'discovered 2.2 million new crystal materials, expanding human knowledge 10x for next-generation clean energy',
+    category: 'MATERIALS & ENERGY'
+  },
+  graphcast: {
+    highlight: 'GraphCast',
+    statement: 'forecasts global weather 10 days out in under 60 seconds, predicting extreme cyclones and heatwaves days earlier',
+    category: 'CLIMATE & EARTH'
+  },
+  flood_hub: {
+    highlight: 'Flood Hub',
+    statement: 'alerts 700 million vulnerable people up to 7 days before rivers breach their banks using satellite radar and AI',
+    category: 'CLIMATE & EARTH'
+  },
+  fusion: {
+    highlight: 'Autonomous Fusion',
+    statement: 'coordinates 19 magnetic coils at 10,000 adjustments per second to bottle burning star plasma hotter than the sun',
+    category: 'MATERIALS & ENERGY'
+  },
+  alphageometry: {
+    highlight: 'AlphaGeometry',
+    statement: 'solves International Mathematical Olympiad geometry problems at silver-medal level without human guidance',
+    category: 'LOGIC & MATHEMATICS'
+  },
+  enformer: {
+    highlight: 'Enformer',
+    statement: 'reads 200,000 letters of non-coding human DNA to pinpoint master genetic switches of disease',
+    category: 'BIOMOLECULAR & HEALTH'
+  },
+  ferminet: {
+    highlight: 'FermiNet',
+    statement: 'solves the fundamental quantum Schrödinger equation from scratch to design green catalysts and carbon capture',
+    category: 'LOGIC & MATHEMATICS'
+  },
+  wildfire: {
+    highlight: 'Fire AI',
+    statement: 'maps active wildfire boundaries every 15 minutes through blinding smoke plumes using satellite thermal infrared',
+    category: 'CLIMATE & EARTH'
+  }
 };
 
 export function SlidingGallery({ projects, onSelectProject }) {
-  const [currentIndex, setCurrentIndex] = useState(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const s = parseInt(params.get('slide'), 10);
-      if (!isNaN(s) && s >= 0 && s < projects.length) return s;
-    } catch {
-      // fallback
-    }
-    return 0;
-  });
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
-
-  // Clamp index if projects change (e.g. filtering)
-  useEffect(() => {
-    if (currentIndex >= projects.length) {
-      setCurrentIndex(Math.max(0, projects.length - 1));
-    }
-  }, [projects.length, currentIndex]);
 
   const handlePrev = useCallback(() => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : projects.length - 1));
@@ -86,17 +68,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
   const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev < projects.length - 1 ? prev + 1 : 0));
   }, [projects.length]);
-
-  // Autoscroll every 10 seconds: pauses when user hovers or manually toggles pause
-  useEffect(() => {
-    if (!isPlaying || isHovered || projects.length <= 1) return;
-
-    const timer = setInterval(() => {
-      handleNext();
-    }, 10000);
-
-    return () => clearInterval(timer);
-  }, [isPlaying, isHovered, handleNext, projects.length, currentIndex]);
 
   // Keyboard navigation (Left / Right arrow keys)
   useEffect(() => {
@@ -132,10 +103,10 @@ export function SlidingGallery({ projects, onSelectProject }) {
   }
 
   const currentProject = projects[currentIndex];
-  const questionData = EYE_CATCHING_QUESTIONS[currentProject.id] || {
-    question: currentProject.leftPanel.question,
-    sub: currentProject.subtitle,
-    impactPill: currentProject.rightPanel.stats[0]?.value + ' ' + currentProject.rightPanel.stats[0]?.label.split(' ')[0],
+  const valueData = VALUE_FORWARD_STATEMENTS[currentProject.id] || {
+    highlight: currentProject.title.split(':')[0],
+    statement: currentProject.subtitle,
+    category: currentProject.category.toUpperCase()
   };
 
   return (
@@ -144,94 +115,74 @@ export function SlidingGallery({ projects, onSelectProject }) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Top Promenade Header Toolbar */}
+      {/* Top Header Toolbar */}
       <div className="promenade-nav-bar">
         <div className="promenade-counter">
           <span className="current-num">{String(currentIndex + 1).padStart(2, '0')}</span>
           <span className="divider">/</span>
           <span className="total-num">{String(projects.length).padStart(2, '0')}</span>
-          <span className="promenade-category-badge">{currentProject.category}</span>
         </div>
 
-        <div className="promenade-nav-controls">
-          {/* Autoscroll 10s status toggle */}
+        <div className="promenade-arrows">
           <button
-            className={`promenade-autoplay-btn ${isPlaying ? (isHovered ? 'hover-paused' : 'playing') : 'paused'}`}
-            onClick={() => setIsPlaying(!isPlaying)}
-            title={isPlaying ? (isHovered ? 'Hovered (Paused) - Click to disable autoscroll' : '10s Autoscroll active - Click to pause') : 'Autoscroll paused - Click to resume'}
-            aria-label={isPlaying ? 'Pause autoscroll' : 'Resume autoscroll'}
+            className="promenade-arrow-btn"
+            onClick={handlePrev}
+            aria-label="Previous exhibit"
+            title="Previous exhibit"
           >
-            {isPlaying ? (
-              isHovered ? (
-                <>
-                  <Pause size={11} />
-                  <span>10s (Hover paused)</span>
-                </>
-              ) : (
-                <>
-                  <Pause size={11} />
-                  <span>10s Autoscroll</span>
-                </>
-              )
-            ) : (
-              <>
-                <Play size={11} />
-                <span>Autoscroll paused</span>
-              </>
-            )}
+            <ChevronLeft size={18} />
           </button>
-
-          <div className="promenade-arrows">
-            <button className="promenade-arrow-btn" onClick={handlePrev} aria-label="Previous exhibit" title="Previous exhibit (Left Arrow)">
-              <ChevronLeft size={18} />
-            </button>
-            <button className="promenade-arrow-btn" onClick={handleNext} aria-label="Next exhibit" title="Next exhibit (Right Arrow)">
-              <ChevronRight size={18} />
-            </button>
-          </div>
+          <button
+            className="promenade-arrow-btn"
+            onClick={handleNext}
+            aria-label="Next exhibit"
+            title="Next exhibit"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
-      </div>
-
-      {/* 10-Second Hairline Progress Indicator */}
-      <div className="promenade-timer-bar-track">
-        <div
-          key={`${currentIndex}-${isPlaying && !isHovered}`}
-          className={`promenade-timer-bar-fill ${isPlaying && !isHovered ? 'animating' : 'paused'}`}
-        />
       </div>
 
       {/* Main Sliding Slide Stage */}
       <div className="promenade-slide-stage">
-        {/* Left Editorial Narrative Column */}
+        {/* Left Editorial Narrative Column (Value-Forward) */}
         <div className="promenade-narrative-col">
-          <div className="promenade-eyebrow">
-            <span>{currentProject.field} • {currentProject.year}</span>
-            {currentProject.award && (
-              <span className="promenade-award-tag">{currentProject.award}</span>
-            )}
+          <div className="promenade-eyebrow-clean">
+            <span>{valueData.category}</span>
           </div>
 
-          {/* Eye-Catching Provocative Question */}
-          <h2 className="promenade-question-heading">
-            "{questionData.question}"
+          {/* Value-Forward Headline with Highlighter on Project Name */}
+          <h2 className="promenade-value-headline">
+            <mark className="value-highlight-mark">{valueData.highlight}</mark>{' '}
+            {valueData.statement}
           </h2>
 
-          {/* CTA: Unfold 3D Trifold Modal & Ask Paper */}
-          <div className="promenade-cta-group">
-            <button className="promenade-unfold-btn" onClick={() => onSelectProject(currentProject)}>
-              <span>Unfold 3D trifold exhibit</span>
-              <ArrowRight size={15} />
+          {/* Clean Action Links */}
+          <div className="promenade-editorial-links">
+            {currentProject.paperUrl && (
+              <a
+                href={currentProject.paperUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="editorial-action-link"
+              >
+                READ PAPER
+              </a>
+            )}
+            <button
+              type="button"
+              className="editorial-action-link"
+              onClick={() => onSelectProject(currentProject)}
+            >
+              VIEW BOARD
             </button>
             <button
-              className="promenade-ask-btn"
+              type="button"
+              className="editorial-action-link"
               onClick={() => onSelectProject(currentProject, { openChat: true })}
-              title="Talk to this research paper in plain English"
             >
-              <MessageSquareQuote size={15} />
-              <span>Talk to paper</span>
+              PLAY WITH MODELS
             </button>
           </div>
         </div>
@@ -239,31 +190,27 @@ export function SlidingGallery({ projects, onSelectProject }) {
         {/* Right Interactive Visual Stage */}
         <div className="promenade-visual-col">
           <div className="promenade-visual-header">
-            <span className="visual-caption-tag">Live Computational Model</span>
-            <button className="visual-expand-btn" onClick={() => onSelectProject(currentProject)} title="Open full 3-panel study spread">
+            <span className="visual-caption-tag">Live Model</span>
+            <button
+              className="visual-expand-btn"
+              onClick={() => onSelectProject(currentProject)}
+              title="Open full exhibit"
+            >
               <Maximize2 size={13} />
-              <span>Full trifold spread</span>
+              <span>Full exhibit</span>
             </button>
           </div>
 
           <div className="promenade-interactive-stage">
             <InteractiveWidget type={currentProject.demoType} />
           </div>
-
-          <div className="promenade-visual-footer">
-            <span className="promenade-method-note">
-              <strong>Method:</strong> {currentProject.centerPanel.heading}
-            </span>
-          </div>
         </div>
       </div>
 
-      {/* Bottom Thumbnail Promenade Strip */}
+      {/* Bottom Thumbnail Strip */}
       <div className="promenade-ticker-strip">
         {projects.map((proj, idx) => {
           const isActive = idx === currentIndex;
-          const qSnippet = EYE_CATCHING_QUESTIONS[proj.id]?.question || proj.title;
-
           return (
             <button
               key={proj.id}
@@ -272,10 +219,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
               title={proj.title}
             >
               <span className="thumb-idx">{String(idx + 1).padStart(2, '0')}</span>
-              <div className="thumb-info">
-                <strong className="thumb-title">{proj.title.split(':')[0]}</strong>
-                <span className="thumb-cat">{proj.category}</span>
-              </div>
+              <strong className="thumb-title">{proj.title.split(':')[0]}</strong>
             </button>
           );
         })}

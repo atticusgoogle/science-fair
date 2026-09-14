@@ -329,9 +329,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                 <RotateCcw size={13} />
               </button>
             </div>
-            <div className="canvas-legend-hint">
-              <span>Select any node or pick a question on the right to leap</span>
-            </div>
           </div>
 
           <svg
@@ -352,30 +349,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
               </pattern>
             </defs>
             <rect width="920" height="720" fill="url(#arch-grid)" className="canvas-background" />
-
-            {/* Academic Continental Territories */}
-            {Object.values(DOMAINS).map((dom) => (
-              <g key={dom.id} className="domain-territory-group">
-                <circle
-                  cx={dom.center.x}
-                  cy={dom.center.y}
-                  r="170"
-                  fill={dom.bgTint}
-                  stroke={dom.borderTint}
-                  strokeWidth="1"
-                  strokeDasharray="4 4"
-                />
-                <text
-                  x={dom.center.x}
-                  y={dom.center.y - 145}
-                  textAnchor="middle"
-                  className="domain-territory-label"
-                  fill={dom.color}
-                >
-                  {dom.label}
-                </text>
-              </g>
-            ))}
 
             {/* Connection Ley-Lines */}
             <g className="connections-layer">
@@ -538,7 +511,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                     />
 
                     {/* Node Text Label */}
-                    <g transform={`translate(0, ${isSelected ? 40 : 34})`}>
+                    <g transform={`translate(0, ${isSelected ? 38 : 32})`}>
                       <text
                         textAnchor="middle"
                         className="node-title-label"
@@ -548,16 +521,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                         fontFamily="Google Sans, sans-serif"
                       >
                         {node.title}
-                      </text>
-                      <text
-                        textAnchor="middle"
-                        dy="13"
-                        className="node-subtitle-label"
-                        fill="#718096"
-                        fontSize="9"
-                        fontFamily="Google Sans Text, sans-serif"
-                      >
-                        {node.subtitle}
                       </text>
                     </g>
                   </g>
@@ -573,7 +536,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
           <div className="dossier-header simplified">
             <div className="dossier-clean-title-block">
               <h2 className="dossier-title">{activeNode.title}</h2>
-              <span className="dossier-subtitle">{activeNode.subtitle}</span>
             </div>
 
             {/* One-Sentence Superpower Headline */}
@@ -624,20 +586,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
               </div>
             )}
 
-            {/* Methodological Engine & Tools Summary */}
-            <div className="dossier-engine-card">
-              <span className="engine-card-label">How it works in plain English</span>
-              <p className="engine-card-text">{activeNode.summary}</p>
-              <div className="engine-tools-strip">
-                <span className="tools-strip-title">Tools used:</span>
-                {activeNode.toolsUsed.map((tool, idx) => (
-                  <span key={idx} className="tool-tag-pill compact">
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-
             {/* The Next Doorways: Follow the Rabbit Hole */}
             <div className="dossier-section paa-section simplified">
               <div className="paa-header-row">
@@ -648,11 +596,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                     : "Rabbit hole branch complete"}
                 </h3>
               </div>
-              <p className="paa-intro-hint">
-                {outgoingConnections.length > 0
-                  ? "Hover to highlight where each question leads, or click to leap forward."
-                  : "All direct pathways from this breakthrough are already in your trail."}
-              </p>
 
               {outgoingConnections.length > 0 ? (
                 <div className="paa-questions-list simplified">

@@ -88,15 +88,8 @@ export default function App() {
             <div className="intro-left">
               <span className="count-label">
                 {viewMode === 'lineage'
-                  ? 'The Constellation of Discovery • 10 Interconnected Breakthroughs'
-                  : `Showing ${filteredProjects.length} study exhibits`}
-              </span>
-              <span className="tactile-hint">
-                {viewMode === 'promenade'
-                  ? 'Swipe or use arrow keys to browse provocative questions with live models'
-                  : viewMode === 'lineage'
-                  ? 'Trace how algorithms leaped across disciplines — follow questions down the rabbit hole'
-                  : 'Select any standing board to unfold its research spread'}
+                  ? 'Constellation of Discovery'
+                  : `${filteredProjects.length} Research Breakthroughs`}
               </span>
             </div>
 
