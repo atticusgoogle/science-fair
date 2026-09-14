@@ -3926,3 +3926,123 @@ body {
   border-color: #CBD5E1;
 }
 
+/* Branch Completed State Card */
+.rabbit-hole-complete-card {
+  background: #FAFAF8;
+  border: 1px dashed var(--border-medium);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.complete-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #B45309;
+}
+
+.complete-spark {
+  color: #B45309;
+}
+
+.complete-heading {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: #121316;
+  margin: 0;
+}
+
+.complete-text {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: #4A5568;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.unvisited-jump-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.unvisited-jump-title {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #121316;
+}
+
+.unvisited-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.unvisited-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 100px;
+  padding: 3px 9px;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #121316;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.unvisited-pill-btn:hover {
+  background: #121316;
+  color: #FFFFFF;
+  border-color: #121316;
+}
+
+.unvisited-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.complete-all-done-note {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #059669;
+  margin: 0;
+}
+
+.complete-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: #121316;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 2px;
+  transition: all 0.15s ease;
+}
+
+.complete-reset-btn:hover {
+  background: #121316;
+  color: #FFFFFF;
+  border-color: #121316;
+}
+
+

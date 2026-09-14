@@ -44,19 +44,29 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     return LINEAGE_NODES.find((n) => n.id === selectedNodeId) || LINEAGE_NODES[0];
   }, [selectedNodeId]);
 
-  // Outgoing connections from the active node
+  // Set of visited node IDs in the current trail to prevent loops and ping-ponging
+  const visitedNodeIds = useMemo(() => {
+    return new Set(trail.map((t) => t.nodeId));
+  }, [trail]);
+
+  // Outgoing connections leading ONLY to unvisited breakthroughs
   const outgoingConnections = useMemo(() => {
-    return LINEAGE_CONNECTIONS.filter((conn) => conn.from === selectedNodeId || conn.to === selectedNodeId).map((conn) => {
-      const isFrom = conn.from === selectedNodeId;
-      const targetNodeId = isFrom ? conn.to : conn.from;
-      const targetNode = LINEAGE_NODES.find((n) => n.id === targetNodeId);
-      return {
-        ...conn,
-        targetNode,
-        targetNodeId
-      };
-    });
-  }, [selectedNodeId]);
+    return LINEAGE_CONNECTIONS
+      .filter((conn) => conn.from === selectedNodeId && !visitedNodeIds.has(conn.to))
+      .map((conn) => {
+        const targetNode = LINEAGE_NODES.find((n) => n.id === conn.to);
+        return {
+          ...conn,
+          targetNode,
+          targetNodeId: conn.to
+        };
+      });
+  }, [selectedNodeId, visitedNodeIds]);
+
+  // Remaining unvisited nodes across the entire constellation
+  const unvisitedNodes = useMemo(() => {
+    return LINEAGE_NODES.filter((n) => !visitedNodeIds.has(n.id));
+  }, [visitedNodeIds]);
 
   // If the last step in the trail was a leap, find the bridging connection
   const lastTrailStep = trail[trail.length - 1];
@@ -75,7 +85,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     return domains.size;
   }, [trail]);
 
-  // Select node directly
+  // Select node directly - prevents cycles by rewinding if node was already visited
   const handleSelectNode = (nodeId, connection = null, questionText = null) => {
     setSelectedNodeId(nodeId);
     setActiveCuratedTrailId(null);
@@ -84,7 +94,14 @@ export function ResearchLineageView({ onOpenProjectModal }) {
       // If clicking the current node, no change
       if (prev[prev.length - 1]?.nodeId === nodeId) return prev;
 
-      // If node is already in trail, don't duplicate needlessly or append new leap
+      // If node was already visited earlier in this trail, rewind back to that step!
+      // This prevents infinite ping-pong loops (e.g. GraphCast <-> Flood Hub)
+      const existingIndex = prev.findIndex((step) => step.nodeId === nodeId);
+      if (existingIndex !== -1) {
+        return prev.slice(0, existingIndex + 1);
+      }
+
+      // Otherwise append new step to the trail
       return [
         ...prev,
         {
@@ -495,30 +512,74 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                 Select a question below to leap to connected research and see how these tools transferred.
               </p>
 
-              <div className="paa-questions-list">
-                {outgoingConnections.map((conn) => {
-                  if (!conn.targetNode) return null;
-                  return (
-                    <button
-                      key={conn.id}
-                      type="button"
-                      className="paa-question-card"
-                      onClick={() => handleSelectNode(conn.targetNodeId, conn, conn.paaQuestion)}
-                    >
-                      <div className="paa-question-content">
-                        <span className="paa-target-chip">
-                          Leap to {conn.targetNode.title}
-                        </span>
-                        <h4 className="paa-question-heading">{conn.paaQuestion}</h4>
-                        <p className="paa-shared-preview">{conn.sharedGene}</p>
+              {outgoingConnections.length > 0 ? (
+                <div className="paa-questions-list">
+                  {outgoingConnections.map((conn) => {
+                    if (!conn.targetNode) return null;
+                    return (
+                      <button
+                        key={conn.id}
+                        type="button"
+                        className="paa-question-card"
+                        onClick={() => handleSelectNode(conn.targetNodeId, conn, conn.paaQuestion)}
+                      >
+                        <div className="paa-question-content">
+                          <span className="paa-target-chip">
+                            Leap to {conn.targetNode.title}
+                          </span>
+                          <h4 className="paa-question-heading">{conn.paaQuestion}</h4>
+                          <p className="paa-shared-preview">{conn.sharedGene}</p>
+                        </div>
+                        <div className="paa-arrow-badge">
+                          <ChevronRight size={15} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rabbit-hole-complete-card">
+                  <div className="complete-card-header">
+                    <Sparkles size={14} className="complete-spark" />
+                    <h4 className="complete-heading">Branch fully explored</h4>
+                  </div>
+                  <p className="complete-text">
+                    You’ve reached the edge of this branch! Every direct scientific connection from {activeNode.title} is already part of your active rabbit hole.
+                  </p>
+
+                  {unvisitedNodes.length > 0 ? (
+                    <div className="unvisited-jump-box">
+                      <span className="unvisited-jump-title">Jump to unvisited territory:</span>
+                      <div className="unvisited-pills-wrap">
+                        {unvisitedNodes.map((uNode) => (
+                          <button
+                            key={uNode.id}
+                            type="button"
+                            className="unvisited-pill-btn"
+                            onClick={() => handleSelectNode(uNode.id)}
+                            title={`Jump to ${uNode.title}`}
+                          >
+                            <span
+                              className="unvisited-dot"
+                              style={{ backgroundColor: DOMAINS[uNode.domain.toUpperCase()]?.color || '#2563EB' }}
+                            />
+                            <span>{uNode.title}</span>
+                          </button>
+                        ))}
                       </div>
-                      <div className="paa-arrow-badge">
-                        <ChevronRight size={15} />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                    </div>
+                  ) : (
+                    <p className="complete-all-done-note">
+                      Constellation master: You have connected all 10 breakthroughs across every academic field.
+                    </p>
+                  )}
+
+                  <button type="button" className="complete-reset-btn" onClick={handleResetTrail}>
+                    <RotateCcw size={12} />
+                    <span>Start a new rabbit hole</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </aside>
