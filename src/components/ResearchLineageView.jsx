@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   DOMAINS,
   LINEAGE_NODES,
@@ -11,24 +11,50 @@ import {
   Compass,
   RotateCcw,
   Sparkles,
-  ExternalLink,
   Share2,
   Check,
   ChevronRight,
   Flame,
-  Layers,
+  ArrowLeft,
+  Lightbulb,
+  Cpu,
   HelpCircle
 } from 'lucide-react';
 
 export function ResearchLineageView({ onOpenProjectModal }) {
   // Active selected node ID
-  const [selectedNodeId, setSelectedNodeId] = useState('alphafold');
+  const [selectedNodeId, setSelectedNodeId] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const n = params.get('node');
+      if (n && LINEAGE_NODES.some((item) => item.id === n)) return n;
+    } catch {
+      // fallback
+    }
+    return 'alphafold';
+  });
+
   // Traversed trail: array of { nodeId, viaConnectionId, question }
-  const [trail, setTrail] = useState([
-    { nodeId: 'alphafold', viaConnectionId: null, question: null }
-  ]);
-  // Hovered node or connection
+  const [trail, setTrail] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const n = params.get('node');
+      if (n && n !== 'alphafold' && LINEAGE_NODES.some((item) => item.id === n)) {
+        // If starting directly on another node via URL, show trail from AlphaFold to that node
+        const conn = LINEAGE_CONNECTIONS.find((c) => c.from === 'alphafold' && c.to === n);
+        return [
+          { nodeId: 'alphafold', viaConnectionId: null, question: null },
+          { nodeId: n, viaConnectionId: conn?.id || null, question: conn?.paaQuestion || null }
+        ];
+      }
+    } catch {
+      // fallback
+    }
+    return [{ nodeId: 'alphafold', viaConnectionId: null, question: null }];
+  });
+  // Hovered node on canvas or hovered question target
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
+  const [hoveredQuestionTargetId, setHoveredQuestionTargetId] = useState(null);
   const [activeCuratedTrailId, setActiveCuratedTrailId] = useState(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -75,6 +101,13 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     return LINEAGE_CONNECTIONS.find((c) => c.id === lastTrailStep.viaConnectionId) || null;
   }, [lastTrailStep]);
 
+  // Previous node in the trail (for visual bridge)
+  const previousNode = useMemo(() => {
+    if (trail.length < 2) return null;
+    const prevStep = trail[trail.length - 2];
+    return LINEAGE_NODES.find((n) => n.id === prevStep.nodeId) || null;
+  }, [trail]);
+
   // Disciplines crossed metric
   const disciplinesCount = useMemo(() => {
     const domains = new Set();
@@ -89,13 +122,13 @@ export function ResearchLineageView({ onOpenProjectModal }) {
   const handleSelectNode = (nodeId, connection = null, questionText = null) => {
     setSelectedNodeId(nodeId);
     setActiveCuratedTrailId(null);
+    setHoveredQuestionTargetId(null);
 
     setTrail((prev) => {
       // If clicking the current node, no change
       if (prev[prev.length - 1]?.nodeId === nodeId) return prev;
 
-      // If node was already visited earlier in this trail, rewind back to that step!
-      // This prevents infinite ping-pong loops (e.g. GraphCast <-> Flood Hub)
+      // If node was already visited earlier in this trail, rewind back to that step
       const existingIndex = prev.findIndex((step) => step.nodeId === nodeId);
       if (existingIndex !== -1) {
         return prev.slice(0, existingIndex + 1);
@@ -111,6 +144,16 @@ export function ResearchLineageView({ onOpenProjectModal }) {
         }
       ];
     });
+  };
+
+  // Step back one step in the trail
+  const handleStepBack = () => {
+    if (trail.length > 1) {
+      const newTrail = trail.slice(0, -1);
+      const prevStep = newTrail[newTrail.length - 1];
+      setSelectedNodeId(prevStep.nodeId);
+      setTrail(newTrail);
+    }
   };
 
   // Launch a curated starter trail
@@ -129,6 +172,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     setActiveCuratedTrailId(null);
     setPanOffset({ x: 0, y: 0 });
     setZoomLevel(1);
+    setHoveredQuestionTargetId(null);
   };
 
   // Share trail link
@@ -142,7 +186,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
 
   // Canvas Drag & Pan Handlers
   const handleMouseDown = (e) => {
-    // Only pan if dragging canvas background
     if (e.target.tagName === 'svg' || e.target.classList.contains('canvas-background')) {
       setIsPanning(true);
       setStartPanPos({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
@@ -166,7 +209,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
       {/* Top Bar: Curated Starter Rabbit Holes */}
       <div className="lineage-top-strip">
         <div className="strip-label-box">
-          <Compass size={15} className="compass-icon" />
+          <Compass size={14} className="compass-icon" />
           <span className="strip-title">Curated journeys</span>
         </div>
         <div className="curated-pills-row">
@@ -185,7 +228,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
         </div>
       </div>
 
-      {/* Main Split: 65% Interactive Archipelago Canvas + 35% Linear Dossier */}
+      {/* Main Split: 65% Interactive Archipelago Canvas + 35% Linear Story Dossier */}
       <div className="lineage-main-layout">
         {/* ================= LEFT: 2.5D CONSTELLATION CANVAS ================= */}
         <div
@@ -227,7 +270,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
               </button>
             </div>
             <div className="canvas-legend-hint">
-              <span>Drag to pan canvas • Select nodes to leap</span>
+              <span>Select any node or pick a question on the right to leap</span>
             </div>
           </div>
 
@@ -242,7 +285,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
           >
             <rect width="920" height="720" fill="#FAFAF8" className="canvas-background" />
 
-            {/* Subtle Grid Coordinates (Architectural Blueprint) */}
+            {/* Subtle Grid Coordinates (Architectural Drafting Paper) */}
             <defs>
               <pattern id="arch-grid" width="40" height="40" patternUnits="userSpaceOnUse">
                 <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#EAEAE5" strokeWidth="0.75" />
@@ -286,6 +329,8 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                 const isTraversedInTrail = trail.some(
                   (t) => t.viaConnectionId === conn.id
                 );
+                const isHoveredTargetBridge =
+                  conn.from === selectedNodeId && conn.to === hoveredQuestionTargetId;
 
                 // Curved bezier link between nodes
                 const dx = target.coords.x - source.coords.x;
@@ -295,7 +340,10 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                 const pathData = `M ${source.coords.x} ${source.coords.y} Q ${midX} ${midY} ${target.coords.x} ${target.coords.y}`;
 
                 return (
-                  <g key={conn.id} className={`connection-path-wrap ${isTraversedInTrail ? 'traversed' : ''} ${isConnectedToActive ? 'active-branch' : ''}`}>
+                  <g
+                    key={conn.id}
+                    className={`connection-path-wrap ${isTraversedInTrail ? 'traversed' : ''} ${isHoveredTargetBridge ? 'target-hover' : ''}`}
+                  >
                     {/* Background hit area */}
                     <path
                       d={pathData}
@@ -312,18 +360,28 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                       stroke={
                         isTraversedInTrail
                           ? '#B45309'
+                          : isHoveredTargetBridge
+                          ? '#B45309'
                           : isConnectedToActive
                           ? '#2C5282'
                           : '#D9D9D2'
                       }
-                      strokeWidth={isTraversedInTrail ? 2.5 : isConnectedToActive ? 2 : 1.2}
-                      strokeDasharray={isTraversedInTrail ? 'none' : isConnectedToActive ? 'none' : '3 3'}
+                      strokeWidth={
+                        isTraversedInTrail ? 2.5 : isHoveredTargetBridge ? 3 : isConnectedToActive ? 2 : 1.2
+                      }
+                      strokeDasharray={
+                        isTraversedInTrail ? 'none' : isHoveredTargetBridge ? 'none' : isConnectedToActive ? 'none' : '3 3'
+                      }
                     />
 
                     {/* Animated pulse dot along active or traversed bridges */}
-                    {(isConnectedToActive || isTraversedInTrail) && (
-                      <circle r="3.5" fill={isTraversedInTrail ? '#B45309' : '#2C5282'} className="pulse-dot">
-                        <animateMotion path={pathData} dur="3s" repeatCount="indefinite" />
+                    {(isConnectedToActive || isTraversedInTrail || isHoveredTargetBridge) && (
+                      <circle
+                        r={isHoveredTargetBridge ? 4.5 : 3.5}
+                        fill={isTraversedInTrail || isHoveredTargetBridge ? '#B45309' : '#2C5282'}
+                        className="pulse-dot"
+                      >
+                        <animateMotion path={pathData} dur="2.5s" repeatCount="indefinite" />
                       </circle>
                     )}
                   </g>
@@ -336,6 +394,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
               {LINEAGE_NODES.map((node) => {
                 const isSelected = node.id === selectedNodeId;
                 const isHovered = node.id === hoveredNodeId;
+                const isHoveredTarget = node.id === hoveredQuestionTargetId;
                 const domainDef = DOMAINS[node.domain.toUpperCase()] || DOMAINS.BIOMOLECULAR;
                 const trailStepIndex = trail.findIndex((t) => t.nodeId === node.id);
                 const isInTrail = trailStepIndex !== -1;
@@ -344,12 +403,24 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                   <g
                     key={node.id}
                     transform={`translate(${node.coords.x}, ${node.coords.y})`}
-                    className={`lineage-node-group ${isSelected ? 'selected' : ''} ${isInTrail ? 'in-trail' : ''}`}
+                    className={`lineage-node-group ${isSelected ? 'selected' : ''} ${isInTrail ? 'in-trail' : ''} ${isHoveredTarget ? 'target-beacon' : ''}`}
                     onClick={() => handleSelectNode(node.id)}
                     onMouseEnter={() => setHoveredNodeId(node.id)}
                     onMouseLeave={() => setHoveredNodeId(null)}
                     style={{ cursor: 'pointer' }}
                   >
+                    {/* Hover Beacon Ring when user hovers a question card */}
+                    {isHoveredTarget && (
+                      <circle
+                        r="38"
+                        fill="none"
+                        stroke="#B45309"
+                        strokeWidth="2.5"
+                        strokeDasharray="4 4"
+                        className="node-target-beacon-ring"
+                      />
+                    )}
+
                     {/* Selected Amber Halo */}
                     {isSelected && (
                       <circle
@@ -366,27 +437,40 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                     <circle
                       r={isSelected ? 26 : 22}
                       fill="#FFFFFF"
-                      stroke={isSelected ? '#121316' : isInTrail ? '#B45309' : '#D0D0CA'}
-                      strokeWidth={isSelected ? 2.5 : isInTrail ? 2 : 1.5}
+                      stroke={isSelected ? '#121316' : isInTrail ? '#B45309' : isHoveredTarget ? '#B45309' : '#D0D0CA'}
+                      strokeWidth={isSelected ? 2.5 : isInTrail || isHoveredTarget ? 2 : 1.5}
                       className="node-outer-circle"
                     />
 
-                    {/* Domain Color Dot */}
+                    {/* Friendly Icon / Emoji inside node */}
+                    <text
+                      textAnchor="middle"
+                      dy="5.5"
+                      fontSize={isSelected ? "16" : "14"}
+                      style={{ userSelect: 'none', pointerEvents: 'none' }}
+                    >
+                      {node.icon}
+                    </text>
+
+                    {/* Domain Color Badge Accent */}
                     <circle
-                      r={isSelected ? 8 : 6}
+                      cx="14"
+                      cy="-14"
+                      r="4.5"
                       fill={domainDef.color}
-                      className="node-domain-dot"
+                      stroke="#FFFFFF"
+                      strokeWidth="1"
                     />
 
                     {/* Trail Order Badge if traversed */}
                     {isInTrail && (
-                      <g transform="translate(14, -16)">
-                        <circle r="9" fill="#B45309" />
+                      <g transform="translate(-14, -14)">
+                        <circle r="8.5" fill="#B45309" />
                         <text
                           textAnchor="middle"
-                          dy="3.5"
+                          dy="3"
                           fill="#FFFFFF"
-                          fontSize="10"
+                          fontSize="9.5"
                           fontWeight="700"
                           fontFamily="Google Sans, sans-serif"
                         >
@@ -402,17 +486,17 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                         className="node-title-label"
                         fill={isSelected ? '#121316' : '#2D3748'}
                         fontWeight={isSelected ? '600' : '500'}
-                        fontSize={isSelected ? '13' : '11.5'}
+                        fontSize={isSelected ? '12.5' : '11'}
                         fontFamily="Google Sans, sans-serif"
                       >
                         {node.title}
                       </text>
                       <text
                         textAnchor="middle"
-                        dy="14"
+                        dy="13"
                         className="node-subtitle-label"
                         fill="#718096"
-                        fontSize="9.5"
+                        fontSize="9"
                         fontFamily="Google Sans Text, sans-serif"
                       >
                         {node.subtitle}
@@ -425,114 +509,130 @@ export function ResearchLineageView({ onOpenProjectModal }) {
           </svg>
         </div>
 
-        {/* ================= RIGHT: LINEAR DOSSIER PANEL ================= */}
+        {/* ================= RIGHT: HIGH-DIGESTIBILITY STORY DOSSIER ================= */}
         <aside className="lineage-dossier-panel">
-          {/* Dossier Header */}
-          <div className="dossier-header">
-            <div className="dossier-badge-row">
-              <span
-                className="domain-indicator-pill"
-                style={{
-                  color: DOMAINS[activeNode.domain.toUpperCase()]?.color || '#2563EB',
-                  backgroundColor: DOMAINS[activeNode.domain.toUpperCase()]?.bgTint || 'rgba(37,99,235,0.08)'
-                }}
-              >
-                {DOMAINS[activeNode.domain.toUpperCase()]?.label}
-              </span>
-              <span className="dossier-year">{activeNode.year}</span>
-              {activeNode.award && (
-                <span className="dossier-award-tag">{activeNode.award}</span>
-              )}
+          {/* Dossier Hero Header */}
+          <div className="dossier-header simplified">
+            <div className="dossier-hero-row">
+              <span className="dossier-hero-icon">{activeNode.icon}</span>
+              <div className="dossier-hero-text">
+                <div className="dossier-badge-row">
+                  <span
+                    className="domain-indicator-pill"
+                    style={{
+                      color: DOMAINS[activeNode.domain.toUpperCase()]?.color || '#2563EB',
+                      backgroundColor: DOMAINS[activeNode.domain.toUpperCase()]?.bgTint || 'rgba(37,99,235,0.08)'
+                    }}
+                  >
+                    {DOMAINS[activeNode.domain.toUpperCase()]?.label}
+                  </span>
+                  <span className="dossier-year">{activeNode.year}</span>
+                  {activeNode.award && (
+                    <span className="dossier-award-tag">{activeNode.award}</span>
+                  )}
+                </div>
+                <h2 className="dossier-title">{activeNode.title}</h2>
+              </div>
             </div>
 
-            <h2 className="dossier-title">{activeNode.title}</h2>
-            <p className="dossier-subtitle">{activeNode.subtitle}</p>
+            {/* One-Sentence Superpower & Stat Badge */}
+            <p className="dossier-superpower-headline">
+              "{activeNode.superpower}"
+            </p>
 
-            {/* Direct Link to full trifold exhibit */}
-            <button
-              type="button"
-              className="open-exhibit-btn"
-              onClick={() => onOpenProjectModal(activeNode.id)}
-            >
-              <span>View full trifold exhibit</span>
-              <ArrowRight size={13} />
-            </button>
+            <div className="dossier-meta-actions">
+              <span className="dossier-stat-highlight">
+                ⚡ {activeNode.keyStat}
+              </span>
+              <button
+                type="button"
+                className="open-exhibit-btn compact"
+                onClick={() => onOpenProjectModal(activeNode.id)}
+                title="Open 3D standing trifold exhibit"
+              >
+                <span>View 3D exhibit</span>
+                <ArrowRight size={12} />
+              </button>
+            </div>
           </div>
 
           <div className="dossier-content-scroll">
-            {/* If a connection was just traversed, show the bridging context */}
-            {lastConnection && lastTrailStep.nodeId === activeNode.id && (
-              <div className="lineage-bridge-card">
-                <div className="bridge-card-header">
-                  <GitFork size={13} className="bridge-icon" />
-                  <span className="bridge-label">Lineage bridge from previous step</span>
+            {/* Visual Lineage Bridge: How did we get from Step A to Step B? */}
+            {lastConnection && previousNode && lastTrailStep.nodeId === activeNode.id ? (
+              <div className="easy-bridge-card">
+                <div className="easy-bridge-top">
+                  <span className="bridge-step-chip">{previousNode.icon} {previousNode.title}</span>
+                  <ArrowRight size={13} className="bridge-arrow" />
+                  <span className="bridge-step-chip active">{activeNode.icon} {activeNode.title}</span>
                 </div>
-                <p className="bridge-question">"{lastConnection.paaQuestion}"</p>
-                <p className="bridge-story">{lastConnection.story}</p>
-                <div className="bridge-gene-tag">
-                  <span className="gene-title">Shared DNA:</span> {lastConnection.sharedGene}
+                <h4 className="easy-bridge-question">"{lastConnection.paaQuestion}"</h4>
+                <p className="easy-bridge-explanation">{lastConnection.story}</p>
+                <div className="easy-bridge-dna">
+                  <Cpu size={12} />
+                  <span><strong>Shared tool DNA:</strong> {lastConnection.sharedGene}</span>
                 </div>
+              </div>
+            ) : (
+              <div className="easy-origin-card">
+                <div className="origin-card-title-row">
+                  <Lightbulb size={14} className="origin-bulb-icon" />
+                  <span className="origin-card-label">The core scientific spark</span>
+                </div>
+                <p className="origin-card-text">{activeNode.simpleOrigin}</p>
               </div>
             )}
 
-            {/* Origin Story: How did this come about? */}
-            <div className="dossier-section">
-              <h3 className="section-eyebrow">How this breakthrough came about</h3>
-              <p className="dossier-body-text">{activeNode.originStory}</p>
-            </div>
-
-            {/* Algorithmic Gene & Summary */}
-            <div className="dossier-section">
-              <h3 className="section-eyebrow">Methodological core</h3>
-              <div className="core-gene-banner">
-                <span className="gene-pill">{activeNode.leadGene}</span>
-              </div>
-              <p className="dossier-body-text">{activeNode.summary}</p>
-            </div>
-
-            {/* Scientific Tools Used */}
-            <div className="dossier-section">
-              <h3 className="section-eyebrow">Tools & infrastructure</h3>
-              <div className="tools-tags-wrap">
+            {/* Methodological Engine & Tools Summary */}
+            <div className="dossier-engine-card">
+              <span className="engine-card-label">How it works in plain English</span>
+              <p className="engine-card-text">{activeNode.summary}</p>
+              <div className="engine-tools-strip">
+                <span className="tools-strip-title">Tools used:</span>
                 {activeNode.toolsUsed.map((tool, idx) => (
-                  <span key={idx} className="tool-tag-pill">
+                  <span key={idx} className="tool-tag-pill compact">
                     {tool}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* People Also Asked: Follow-up Rabbit Hole Leaps */}
-            <div className="dossier-section paa-section">
+            {/* The Next Doorways: Follow the Rabbit Hole */}
+            <div className="dossier-section paa-section simplified">
               <div className="paa-header-row">
                 <HelpCircle size={14} className="paa-icon" />
-                <h3 className="section-eyebrow paa-title">Follow the rabbit hole (People also asked)</h3>
+                <h3 className="section-eyebrow paa-title">
+                  {outgoingConnections.length > 0
+                    ? "Where curiosity leads next"
+                    : "Rabbit hole branch complete"}
+                </h3>
               </div>
               <p className="paa-intro-hint">
-                Select a question below to leap to connected research and see how these tools transferred.
+                {outgoingConnections.length > 0
+                  ? "Hover to see where each question points on the map, or click to leap forward."
+                  : "All direct pathways from this breakthrough are already in your trail."}
               </p>
 
               {outgoingConnections.length > 0 ? (
-                <div className="paa-questions-list">
+                <div className="paa-questions-list simplified">
                   {outgoingConnections.map((conn) => {
                     if (!conn.targetNode) return null;
                     return (
                       <button
                         key={conn.id}
                         type="button"
-                        className="paa-question-card"
+                        className="paa-question-card simplified"
                         onClick={() => handleSelectNode(conn.targetNodeId, conn, conn.paaQuestion)}
+                        onMouseEnter={() => setHoveredQuestionTargetId(conn.targetNodeId)}
+                        onMouseLeave={() => setHoveredQuestionTargetId(null)}
                       >
-                        <div className="paa-question-content">
+                        <div className="paa-card-target-row">
                           <span className="paa-target-chip">
-                            Leap to {conn.targetNode.title}
+                            {conn.targetNode.icon} Leap to {conn.targetNode.title}
                           </span>
-                          <h4 className="paa-question-heading">{conn.paaQuestion}</h4>
-                          <p className="paa-shared-preview">{conn.sharedGene}</p>
+                          <ChevronRight size={14} className="paa-arrow" />
                         </div>
-                        <div className="paa-arrow-badge">
-                          <ChevronRight size={15} />
-                        </div>
+                        <h4 className="paa-question-heading simplified">{conn.paaQuestion}</h4>
+                        <p className="paa-shared-preview simplified">{conn.sharedGene}</p>
                       </button>
                     );
                   })}
@@ -544,12 +644,11 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                     <h4 className="complete-heading">Branch fully explored</h4>
                   </div>
                   <p className="complete-text">
-                    You’ve reached the edge of this branch! Every direct scientific connection from {activeNode.title} is already part of your active rabbit hole.
+                    You’ve charted every direct connection from {activeNode.title}! Select an unvisited breakthrough below to jump to a new sector of science:
                   </p>
 
                   {unvisitedNodes.length > 0 ? (
                     <div className="unvisited-jump-box">
-                      <span className="unvisited-jump-title">Jump to unvisited territory:</span>
                       <div className="unvisited-pills-wrap">
                         {unvisitedNodes.map((uNode) => (
                           <button
@@ -559,10 +658,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                             onClick={() => handleSelectNode(uNode.id)}
                             title={`Jump to ${uNode.title}`}
                           >
-                            <span
-                              className="unvisited-dot"
-                              style={{ backgroundColor: DOMAINS[uNode.domain.toUpperCase()]?.color || '#2563EB' }}
-                            />
+                            <span>{uNode.icon}</span>
                             <span>{uNode.title}</span>
                           </button>
                         ))}
@@ -570,13 +666,13 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                     </div>
                   ) : (
                     <p className="complete-all-done-note">
-                      Constellation master: You have connected all 10 breakthroughs across every academic field.
+                      🏆 Constellation master: You have connected all 10 breakthroughs across every academic field!
                     </p>
                   )}
 
                   <button type="button" className="complete-reset-btn" onClick={handleResetTrail}>
                     <RotateCcw size={12} />
-                    <span>Start a new rabbit hole</span>
+                    <span>Start a fresh rabbit hole</span>
                   </button>
                 </div>
               )}
@@ -585,19 +681,19 @@ export function ResearchLineageView({ onOpenProjectModal }) {
         </aside>
       </div>
 
-      {/* ================= BOTTOM: MY RABBIT HOLE TRAIL TRACKER ================= */}
-      <footer className="lineage-trail-footer">
+      {/* ================= BOTTOM: STEPPER DISCOVERY TRAIL ================= */}
+      <footer className="lineage-trail-footer simplified">
         <div className="trail-metrics-box">
           <div className="trail-count-badge">
             <Flame size={13} className="flame-icon" />
-            <span>{trail.length} {trail.length === 1 ? 'step' : 'steps'} in your rabbit hole</span>
+            <span>Step {trail.length} of your journey</span>
           </div>
           <span className="disciplines-count">
             {disciplinesCount} {disciplinesCount === 1 ? 'discipline' : 'disciplines'} crossed
           </span>
         </div>
 
-        {/* Trail Breadcrumbs */}
+        {/* Trail Breadcrumbs Stepper */}
         <div className="trail-breadcrumbs-rail">
           {trail.map((step, idx) => {
             const node = LINEAGE_NODES.find((n) => n.id === step.nodeId);
@@ -618,6 +714,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                   title={`Step ${idx + 1}: ${node.title}`}
                 >
                   <span className="trail-step-num">{idx + 1}</span>
+                  <span className="trail-node-icon">{node.icon}</span>
                   <span className="trail-node-name">{node.title}</span>
                 </button>
               </React.Fragment>
@@ -627,14 +724,25 @@ export function ResearchLineageView({ onOpenProjectModal }) {
 
         {/* Trail Actions */}
         <div className="trail-actions-group">
+          {trail.length > 1 && (
+            <button
+              type="button"
+              className="trail-action-btn step-back"
+              onClick={handleStepBack}
+              title="Step back one leap"
+            >
+              <ArrowLeft size={12} />
+              <span>Step back</span>
+            </button>
+          )}
           <button
             type="button"
             className="trail-action-btn share"
             onClick={handleShareTrail}
             title="Copy link to this research path"
           >
-            {copiedLink ? <Check size={13} /> : <Share2 size={13} />}
-            <span>{copiedLink ? 'Copied' : 'Share trail'}</span>
+            {copiedLink ? <Check size={12} /> : <Share2 size={12} />}
+            <span>{copiedLink ? 'Copied' : 'Share'}</span>
           </button>
           <button
             type="button"
@@ -642,8 +750,8 @@ export function ResearchLineageView({ onOpenProjectModal }) {
             onClick={handleResetTrail}
             title="Start a new rabbit hole"
           >
-            <RotateCcw size={13} />
-            <span>Reset trail</span>
+            <RotateCcw size={12} />
+            <span>Reset</span>
           </button>
         </div>
       </footer>

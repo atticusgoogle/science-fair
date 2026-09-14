@@ -3437,6 +3437,28 @@ body {
   animation: rotateDashes 20s linear infinite;
 }
 
+.node-target-beacon-ring {
+  animation: pulseBeacon 1.4s ease-in-out infinite;
+}
+
+@keyframes pulseBeacon {
+  0% {
+    r: 34px;
+    opacity: 0.9;
+    stroke-width: 3;
+  }
+  50% {
+    r: 44px;
+    opacity: 0.3;
+    stroke-width: 1.5;
+  }
+  100% {
+    r: 34px;
+    opacity: 0.9;
+    stroke-width: 3;
+  }
+}
+
 @keyframes rotateDashes {
   to {
     stroke-dashoffset: 100;
@@ -3460,33 +3482,55 @@ body {
   overflow: hidden;
 }
 
-.dossier-header {
-  padding: 20px 20px 16px;
+/* Simplified Hero Header */
+.dossier-header.simplified {
+  padding: 16px 18px 14px;
   border-bottom: 1px solid var(--border-hairline);
   background: #FFFFFF;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.dossier-hero-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dossier-hero-icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+.dossier-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
 }
 
 .dossier-badge-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .domain-indicator-pill {
   font-family: var(--font-display);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
 }
 
 .dossier-year {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   color: #64748B;
 }
 
@@ -3494,49 +3538,70 @@ body {
   background: #FEF3C7;
   color: #92400E;
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
-  padding: 2px 7px;
+  padding: 1px 6px;
   border-radius: 4px;
   border: 1px solid #FDE68A;
 }
 
 .dossier-title {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 600;
   color: #121316;
   letter-spacing: -0.02em;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
-.dossier-subtitle {
-  font-family: var(--font-body);
-  font-size: 12.5px;
-  color: #64748B;
+/* One-Sentence Superpower Headline */
+.dossier-superpower-headline {
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1E293B;
+  line-height: 1.4;
   margin: 0;
 }
 
-.open-exhibit-btn {
-  margin-top: 4px;
+.dossier-meta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.dossier-stat-highlight {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: #047857;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.open-exhibit-btn.compact {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: #121316;
   color: #FFFFFF;
   border: none;
-  border-radius: 6px;
-  padding: 7px 12px;
+  border-radius: 5px;
+  padding: 5px 10px;
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-  align-self: flex-start;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.open-exhibit-btn:hover {
+.open-exhibit-btn.compact:hover {
   background: #000000;
   transform: translateY(-1px);
 }
@@ -3545,14 +3610,14 @@ body {
 .dossier-content-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 18px 20px 24px;
+  padding: 14px 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
-/* Lineage Bridge Notification Card */
-.lineage-bridge-card {
+/* Visual Easy Bridge Card */
+.easy-bridge-card {
   background: #FFFBEB;
   border: 1px solid #FDE68A;
   border-radius: 8px;
@@ -3560,126 +3625,157 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  animation: fadeInBridge 0.25s ease;
+  animation: fadeInBridge 0.2s ease;
 }
 
-@keyframes fadeInBridge {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.bridge-card-header {
+.easy-bridge-top {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.bridge-step-chip {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  color: #78350F;
+  background: rgba(245, 158, 11, 0.12);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.bridge-step-chip.active {
+  background: #B45309;
+  color: #FFFFFF;
+}
+
+.bridge-arrow {
   color: #B45309;
 }
 
-.bridge-icon {
-  flex-shrink: 0;
-}
-
-.bridge-label {
+.easy-bridge-question {
   font-family: var(--font-display);
-  font-size: 10.5px;
-  font-weight: 600;
-}
-
-.bridge-question {
-  font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #121316;
-  margin: 0;
+  margin: 2px 0 0 0;
   line-height: 1.35;
 }
 
-.bridge-story {
+.easy-bridge-explanation {
   font-family: var(--font-body);
   font-size: 11.5px;
   color: #4A5568;
-  margin: 0;
   line-height: 1.5;
+  margin: 0;
 }
 
-.bridge-gene-tag {
+.easy-bridge-dna {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
-  color: #78350F;
-  background: rgba(180, 83, 9, 0.08);
+  color: #92400E;
+  margin-top: 2px;
+  background: rgba(245, 158, 11, 0.08);
   border-radius: 4px;
   padding: 3px 6px;
-  margin-top: 2px;
 }
 
-.gene-title {
+/* Easy Origin Spark Card (For Step 1) */
+.easy-origin-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.origin-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #2C5282;
+}
+
+.origin-bulb-icon {
+  color: #D97706;
+}
+
+.origin-card-label {
+  font-family: var(--font-display);
+  font-size: 10.5px;
   font-weight: 600;
+  color: #1E293B;
 }
 
-/* Dossier Sections */
-.dossier-section {
+.origin-card-text {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: #4A5568;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Engine & Tools Card */
+.dossier-engine-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.section-eyebrow {
+.engine-card-label {
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 600;
   color: #121316;
-  letter-spacing: -0.01em;
-  margin: 0;
 }
 
-.dossier-body-text {
+.engine-card-text {
   font-family: var(--font-body);
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: #374151;
-  max-width: 65ch;
+  font-size: 11.5px;
+  color: #4A5568;
+  line-height: 1.5;
   margin: 0;
 }
 
-.core-gene-banner {
+.engine-tools-strip {
   display: flex;
-}
-
-.gene-pill {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: #2C5282;
-  background: #EBF8FF;
-  border: 1px solid #BEE3F8;
-  border-radius: 4px;
-  padding: 3px 8px;
-}
-
-.tools-tags-wrap {
-  display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tool-tag-pill {
-  background: #F3F4F6;
-  border: 1px solid #E5E7EB;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-family: var(--font-body);
-  font-size: 10.5px;
-  color: #374151;
-}
-
-/* People Also Asked Engine */
-.paa-section {
+  gap: 5px;
+  margin-top: 4px;
+  padding-top: 6px;
   border-top: 1px solid var(--border-hairline);
-  padding-top: 14px;
+}
+
+.tools-strip-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.tool-tag-pill.compact {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: #334155;
+  font-family: var(--font-body);
+}
+
+/* People Also Asked Engine (Simplified & Actionable) */
+.paa-section.simplified {
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 12px;
 }
 
 .paa-header-row {
@@ -3693,30 +3789,32 @@ body {
 }
 
 .paa-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
   color: #121316;
 }
 
 .paa-intro-hint {
   font-family: var(--font-body);
-  font-size: 11px;
+  font-size: 10.5px;
   color: #64748B;
-  margin: 0 0 8px 0;
-  line-height: 1.4;
+  margin: 2px 0 8px 0;
+  line-height: 1.35;
 }
 
-.paa-questions-list {
+.paa-questions-list.simplified {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.paa-question-card {
+.paa-question-card.simplified {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background: #FAFAF8;
-  border: 1px solid #E2E8F0;
+  flex-direction: column;
+  gap: 4px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
   border-radius: 8px;
   padding: 10px 12px;
   text-align: left;
@@ -3725,31 +3823,40 @@ body {
   width: 100%;
 }
 
-.paa-question-card:hover {
-  background: #FFFFFF;
+.paa-question-card.simplified:hover {
   border-color: #B45309;
-  box-shadow: 0 2px 10px rgba(180, 83, 9, 0.08);
+  background: #FFFDF9;
+  box-shadow: 0 3px 12px rgba(180, 83, 9, 0.1);
   transform: translateX(2px);
 }
 
-.paa-question-content {
+.paa-card-target-row {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-  flex: 1;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .paa-target-chip {
   font-family: var(--font-display);
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 600;
   color: #2C5282;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.paa-question-heading {
+.paa-arrow {
+  color: #94A3B8;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.paa-question-card.simplified:hover .paa-arrow {
+  color: #B45309;
+  transform: translateX(2px);
+}
+
+.paa-question-heading.simplified {
   font-family: var(--font-display);
   font-size: 12px;
   font-weight: 600;
@@ -3758,26 +3865,120 @@ body {
   line-height: 1.35;
 }
 
-.paa-shared-preview {
+.paa-shared-preview.simplified {
   font-family: var(--font-body);
   font-size: 10px;
   color: #64748B;
   margin: 0;
 }
 
-.paa-arrow-badge {
-  color: #94A3B8;
-  transition: color 0.15s ease, transform 0.15s ease;
-  flex-shrink: 0;
+/* Branch Completed State Card */
+.rabbit-hole-complete-card {
+  background: #FAFAF8;
+  border: 1px dashed var(--border-medium);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.paa-question-card:hover .paa-arrow-badge {
+.complete-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   color: #B45309;
-  transform: translateX(2px);
+}
+
+.complete-spark {
+  color: #B45309;
+}
+
+.complete-heading {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: #121316;
+  margin: 0;
+}
+
+.complete-text {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: #4A5568;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.unvisited-jump-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.unvisited-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.unvisited-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: #121316;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.unvisited-pill-btn:hover {
+  background: #121316;
+  color: #FFFFFF;
+  border-color: #121316;
+}
+
+.complete-all-done-note {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #059669;
+  margin: 0;
+}
+
+.complete-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: #121316;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 2px;
+  transition: all 0.15s ease;
+}
+
+.complete-reset-btn:hover {
+  background: #121316;
+  color: #FFFFFF;
+  border-color: #121316;
 }
 
 /* Bottom Ribbon: Rabbit Hole Trail Tracker */
-.lineage-trail-footer {
+.lineage-trail-footer.simplified {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3788,7 +3989,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .lineage-trail-footer {
+  .lineage-trail-footer.simplified {
     flex-direction: column;
     align-items: stretch;
   }
@@ -3846,7 +4047,7 @@ body {
 .trail-node-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: #FAFAF8;
   border: 1px solid #E2E8F0;
   border-radius: 100px;
@@ -3885,6 +4086,10 @@ body {
   color: #FFFFFF;
 }
 
+.trail-node-icon {
+  font-size: 11px;
+}
+
 .trail-node-name {
   font-family: var(--font-display);
   font-size: 11px;
@@ -3896,18 +4101,18 @@ body {
 .trail-actions-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .trail-action-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #FAFAF8;
   border: 1px solid var(--border-medium);
   border-radius: 6px;
-  padding: 5px 10px;
+  padding: 5px 9px;
   font-family: var(--font-display);
   font-size: 11px;
   font-weight: 500;
@@ -3921,128 +4126,20 @@ body {
   background: #F1F5F9;
 }
 
+.trail-action-btn.step-back {
+  color: #B45309;
+  border-color: #FDE68A;
+  background: #FFFBEB;
+}
+
+.trail-action-btn.step-back:hover {
+  background: #FEF3C7;
+}
+
 .trail-action-btn.share {
   color: #2C5282;
   border-color: #CBD5E1;
 }
 
-/* Branch Completed State Card */
-.rabbit-hole-complete-card {
-  background: #FAFAF8;
-  border: 1px dashed var(--border-medium);
-  border-radius: 8px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.complete-card-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #B45309;
-}
-
-.complete-spark {
-  color: #B45309;
-}
-
-.complete-heading {
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 600;
-  color: #121316;
-  margin: 0;
-}
-
-.complete-text {
-  font-family: var(--font-body);
-  font-size: 11.5px;
-  color: #4A5568;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.unvisited-jump-box {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 2px;
-}
-
-.unvisited-jump-title {
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #121316;
-}
-
-.unvisited-pills-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.unvisited-pill-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-medium);
-  border-radius: 100px;
-  padding: 3px 9px;
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: #121316;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.unvisited-pill-btn:hover {
-  background: #121316;
-  color: #FFFFFF;
-  border-color: #121316;
-}
-
-.unvisited-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.complete-all-done-note {
-  font-family: var(--font-display);
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #059669;
-  margin: 0;
-}
-
-.complete-reset-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: #FFFFFF;
-  border: 1px solid var(--border-medium);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 500;
-  color: #121316;
-  cursor: pointer;
-  align-self: flex-start;
-  margin-top: 2px;
-  transition: all 0.15s ease;
-}
-
-.complete-reset-btn:hover {
-  background: #121316;
-  color: #FFFFFF;
-  border-color: #121316;
-}
 
 
