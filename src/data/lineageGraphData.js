@@ -219,7 +219,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'gnome',
     connectionType: 'architecture_transfer',
     sharedGene: 'Geometric Graph Attention: Proteins → Inorganic Crystals',
-    paaQuestion: 'How did predicting protein folding lead to discovering 2.2 million new crystal materials?',
+    paaQuestion: "How did AlphaFold 3's 3D molecular predictions lead to GNoME discovering 2.2 million new crystal materials?",
     story: 'AlphaFold learned how atoms assemble into 3D biological proteins. GNoME adapted that exact spatial graph intuition to inorganic chemistry—treating crystal unit cells as periodic graphs to predict thermodynamic stability for EV batteries.'
   },
   {
@@ -228,7 +228,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'enformer',
     connectionType: 'biological_code',
     sharedGene: 'Long-Range Attention: 3D Protein Complexes → Non-Coding Switches',
-    paaQuestion: 'How does 3D molecular folding relate to the 98% non-coding human genome?',
+    paaQuestion: "How does AlphaFold 3's 3D protein folding connect to Enformer decoding the 98% non-coding human genome?",
     story: 'While AlphaFold predicts the 3D shapes of proteins, 98% of human DNA does not code for proteins at all. DeepMind scientists applied long-range attention architectures to model how distant non-coding regulatory switches fold in 3D space to trigger or suppress gene expression.'
   },
   {
@@ -237,7 +237,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'ferminet',
     connectionType: 'first_principles',
     sharedGene: 'Neural Approximation → First-Principles Quantum Chemistry',
-    paaQuestion: 'Can first-principles quantum physics simulate drug binding even deeper than neural nets?',
+    paaQuestion: "How did predicting molecular structures in AlphaFold 3 push scientists toward FermiNet's first-principles quantum chemistry?",
     story: 'AlphaFold predicts molecular geometry using learned statistical patterns. FermiNet takes the next leap: solving the fundamental Schrödinger equation directly for electrons without training data, computing exact chemical bond energies from first principles.'
   },
 
@@ -248,7 +248,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'graphcast',
     connectionType: 'architecture_transfer',
     sharedGene: 'Periodic Graph Networks: Nanoscale Crystals → Planetary Weather',
-    paaQuestion: 'How did crystal lattice modeling inspire global 10-day weather forecasting?',
+    paaQuestion: "How did GNoME's crystal lattice graph networks inspire GraphCast's global 10-day weather forecasting?",
     story: 'Both crystals and Earth’s atmosphere cannot be mapped onto flat Euclidean grids without distortion. The graph neural network innovations developed in GNoME for periodic crystal boundaries were scaled up into GraphCast’s icosahedral multi-mesh, wrapping the entire spherical atmosphere.'
   },
   {
@@ -257,7 +257,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'fusion',
     connectionType: 'materials_extreme',
     sharedGene: 'Thermodynamic Stability → 100M°C Tokamak Divertor Walls',
-    paaQuestion: 'Can newly discovered crystal materials withstand 100,000,000°C plasma walls?',
+    paaQuestion: "How can GNoME's newly discovered crystal materials protect Autonomous Fusion's 100,000,000°C plasma walls?",
     story: 'Nuclear fusion chambers require ultra-resilient materials that won’t melt or degrade under intense neutron bombardment. GNoME’s discovery of 736 potential superhard materials provides promising candidates for next-generation tokamak divertor tiles.'
   },
   {
@@ -266,7 +266,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'ferminet',
     connectionType: 'first_principles',
     sharedGene: 'Quantum Energy Benchmarks: Convex Hull → Ab-Initio Wavefunctions',
-    paaQuestion: 'How do quantum electron wavefunctions verify thermodynamic stability on the convex hull?',
+    paaQuestion: "How does GNoME rely on FermiNet's quantum Schrödinger equations to verify whether 2.2 million new crystals will decompose?",
     story: 'GNoME generates millions of theoretical candidate crystal structures. To verify whether a crystal will spontaneously decompose, physicists use quantum ab-initio simulations pioneered by FermiNet to calculate ground-state electronic energies with chemical accuracy.'
   },
 
@@ -277,7 +277,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'flood_hub',
     connectionType: 'data_cascade',
     sharedGene: 'Atmospheric Dynamics → Hydrological Watershed Runoff',
-    paaQuestion: 'How does a 10-day global weather forecast save lives from local river floods?',
+    paaQuestion: "How do GraphCast's 10-day global weather forecasts feed directly into Flood Hub's life-saving river alerts?",
     story: 'GraphCast predicts extreme atmospheric rivers and torrential rain up to 10 days out. Flood Hub takes these precipitation forecasts and routes them through digital elevation models to alert 700 million people before riverbanks breach.'
   },
   {
@@ -286,7 +286,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'wildfire',
     connectionType: 'data_cascade',
     sharedGene: 'Atmospheric Wind Vectors → Ground Thermal Fire Lines',
-    paaQuestion: 'Can 60-second weather models predict which way a wildfire will blow?',
+    paaQuestion: "How do GraphCast's 60-second wind and humidity vectors help Fire AI predict which way a wildfire will spread?",
     story: 'GraphCast models surface wind velocity and relative humidity at fine resolution. Fire AI pairs these meteorological vectors with 15-minute satellite thermal perimeters to anticipate fire spread across mountain ridges.'
   },
   {
@@ -295,7 +295,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'bioacoustics',
     connectionType: 'climate_impact',
     sharedGene: 'Planetary Meteorological Shifts → Ecosystem Acoustic Monitoring',
-    paaQuestion: 'How do global atmospheric shifts impact vulnerable rainforest ecosystems?',
+    paaQuestion: "How do GraphCast's planetary drought and heatwave forecasts guide Perch's acoustic monitoring of rainforest wildlife?",
     story: 'As GraphCast tracks shifting drought corridors and heatwaves worldwide, conservationists use Perch’s acoustic canopy arrays to record how bird and animal migration patterns shift in real time in response to changing microclimates.'
   },
 
@@ -306,7 +306,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'wildfire',
     connectionType: 'humanitarian_alert',
     sharedGene: 'Crisis AI Infrastructure: Google Maps & Android Emergency Broadcasting',
-    paaQuestion: 'How do satellite climate models translate into real-time emergency evacuations?',
+    paaQuestion: "How does Flood Hub's emergency alerting infrastructure share real-time Google Maps evacuations with Fire AI?",
     story: 'Both Flood Hub and Fire AI share Google’s humanitarian emergency broadcasting infrastructure—transforming complex satellite telemetry and neural predictions into plain-language push alerts and Google Maps evacuation boundaries.'
   },
   {
@@ -315,7 +315,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'bioacoustics',
     connectionType: 'ecology_hydrology',
     sharedGene: 'Hydrological Discharge → Riparian Ecosystem Preservation',
-    paaQuestion: 'Can river discharge modeling safeguard vulnerable wetland wildlife?',
+    paaQuestion: "How do Flood Hub's river watershed runoff models guide Perch's acoustic sensors to protect wetland ecosystems?",
     story: 'Flood Hub’s watershed runoff models predict seasonal inundation of critical river basins, helping ecologists deploy Perch acoustic sensors to protect endangered amphibious species and monitor mangrove restoration corridors.'
   },
   {
@@ -324,7 +324,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphageometry',
     connectionType: 'formal_safety',
     sharedGene: 'Mission-Critical Reliability → Formal Verification & Reasoning',
-    paaQuestion: 'How does Google verify that crisis alert software never hallucinates during a disaster?',
+    paaQuestion: "How does Flood Hub use AlphaGeometry's formal mathematical verification to guarantee zero errors during disaster alerts?",
     story: 'When alerting 700 million people to incoming natural disasters, AI models cannot produce false anomalies. The formal mathematical proof and neuro-symbolic verification techniques from AlphaGeometry are adapted into safety-critical pipeline verification.'
   },
 
@@ -335,7 +335,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'flood_hub',
     connectionType: 'post_disaster_coupling',
     sharedGene: 'Satellite Burn Scars → Post-Fire Mudslide Forecasting',
-    paaQuestion: 'How does satellite burn scar mapping forecast catastrophic winter mudslides?',
+    paaQuestion: "How do Fire AI's satellite burn perimeters feed directly into Flood Hub's post-fire mudslide warnings?",
     story: 'When a wildfire incinerates vegetation, hydrophobic soil cannot absorb winter rain. Fire AI’s verified perimeter burn-severity maps feed directly into Flood Hub’s elevation runoff models to predict deadly debris flows months before the first storms hit.'
   },
   {
@@ -344,7 +344,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'bioacoustics',
     connectionType: 'conservation_defense',
     sharedGene: 'Thermal Infrared Surveillance → Acoustic Poaching & Chainsaw Defense',
-    paaQuestion: 'Can forest canopy microphones detect illegal logging before fires are ignited?',
+    paaQuestion: "How does Fire AI's satellite thermal tracking combine with Perch's canopy microphones to catch illegal logging before fires ignite?",
     story: 'Many catastrophic wildfires in tropical reserves begin with illegal agricultural slash-and-burn clearing. Perch acoustic sensors detect chainsaws and motor equipment in real time, alerting rangers before illegal deforestation ignites wildfire lines.'
   },
   {
@@ -353,7 +353,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'graphcast',
     connectionType: 'meteorological_feedback',
     sharedGene: 'Wildfire Smoke Pyrocumulonimbus → Global Atmospheric Feedback',
-    paaQuestion: 'How do massive wildfire smoke plumes alter global weather forecasts?',
+    paaQuestion: "How do Fire AI's real-time wildfire smoke perimeters feed back into GraphCast's global weather forecasts?",
     story: 'Megafires generate pyrocumulonimbus thunderstorm clouds that inject millions of tons of smoke aerosol into the stratosphere, altering solar radiation. Coupling Fire AI perimeters back into GraphCast ensures global weather predictions account for active burn emissions.'
   },
 
@@ -364,7 +364,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphageometry',
     connectionType: 'search_reasoning',
     sharedGene: 'Infinite State Space Search: Tokamak Plasma → Olympiad Proofs',
-    paaQuestion: 'What connects stabilizing 100M°C plasma with solving Olympiad geometry?',
+    paaQuestion: "How does stabilizing 100,000,000°C plasma in Autonomous Fusion connect with solving Olympiad geometry in AlphaGeometry?",
     story: 'Both problems require navigating an astronomically vast space of choices without human guidance. The deep reinforcement learning search algorithms that modulate 19 tokamak magnetic coils were refined into AlphaGeometry’s neuro-symbolic search for creative auxiliary geometric constructions.'
   },
   {
@@ -373,7 +373,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'gnome',
     connectionType: 'clean_energy_ecosystem',
     sharedGene: 'Magnetic Plasma Engineering → High-Entropy Alloy Materials',
-    paaQuestion: 'What novel crystal materials are needed to build commercial fusion power plants?',
+    paaQuestion: "How does Autonomous Fusion's 100,000,000°C reactor rely on newly discovered crystal alloys from GNoME for its plasma walls?",
     story: 'Containing burning star plasma requires ultra-dense magnetic fields and radiation-resistant materials. The materials discovered by GNoME—including novel tungsten-based alloys and superconductor candidates—form the experimental roadmap for commercial fusion reactor vessels.'
   },
   {
@@ -382,7 +382,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'ferminet',
     connectionType: 'quantum_physics',
     sharedGene: 'Turbulent Plasma Transport → Ab-Initio Multi-Electron Simulations',
-    paaQuestion: 'How do quantum mechanical simulations model turbulent plasma ionization?',
+    paaQuestion: "How does Autonomous Fusion use FermiNet's ab-initio quantum wavefunctions to model turbulent plasma ionization?",
     story: 'At 100,000,000°C, atomic nuclei and electrons detach into turbulent, conductive plasma. FermiNet’s ab-initio quantum wavefunctions help physicists calculate atomic ionization rates and bremsstrahlung radiation loss directly from first principles.'
   },
 
@@ -393,7 +393,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'gnome',
     connectionType: 'first_principles',
     sharedGene: 'Fundamental Quantum Energies → Convex Hull Material Filters',
-    paaQuestion: 'How does solving the Schrödinger equation from scratch verify new battery crystals?',
+    paaQuestion: "How does FermiNet's solution to the Schrödinger equation verify thermodynamic stability for GNoME's 2.2 million new crystals?",
     story: 'When GNoME invents 2.2 million theoretical crystal structures, physicists must verify whether they will decompose. FermiNet’s first-principles quantum calculations provide the fundamental ground-truth electron energies to validate stable candidates on the convex hull.'
   },
   {
@@ -402,7 +402,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'fusion',
     connectionType: 'clean_energy_physics',
     sharedGene: 'First-Principles Quantum Mechanics → Magnetic Confinement Simulations',
-    paaQuestion: 'Can neural wavefunctions simulate extreme plasma confinement physics?',
+    paaQuestion: "How do FermiNet's first-principles quantum wavefunctions simulate extreme plasma confinement inside Autonomous Fusion's tokamak?",
     story: 'Simulating quantum electron collisions under extreme magnetic fields is essential to understanding fusion plasma stability. FermiNet demonstrates that neural networks can solve multi-particle wavefunctions without empirical approximations.'
   },
   {
@@ -411,7 +411,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphafold',
     connectionType: 'molecular_precision',
     sharedGene: 'Quantum Chemistry Precision → Sub-Angstrom Biomolecular Docking',
-    paaQuestion: 'Could quantum wavefunctions compute atomic bond forces directly in drug discovery?',
+    paaQuestion: "How does FermiNet's electron-level quantum chemistry compute exact atomic bond energies to refine AlphaFold 3's drug structures?",
     story: 'While AlphaFold predicts protein and ligand coordinate geometry, calculating exact quantum transition states for drug efficacy requires electron-level physics. FermiNet provides the sub-angstrom energy landscapes that take biomolecular modeling to chemical precision.'
   },
 
@@ -422,7 +422,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphafold',
     connectionType: 'biological_code',
     sharedGene: 'Long-Range Attention: Non-Coding Switches → 3D Molecular Complexes',
-    paaQuestion: 'Why did decoding the non-coding genome require the same transformer architecture as AlphaFold?',
+    paaQuestion: "How did Enformer's attention across 200,000 non-coding DNA letters share transformer architecture with AlphaFold 3's 3D molecular structures?",
     story: 'DNA loops in 3D: a genetic switch 100,000 base pairs away physically touches a gene promoter. Enformer’s 200,000-base-pair attention window demonstrated that biological sequences must be processed with long-range structural attention, directly mirroring AlphaFold 3’s biomolecular interactions.'
   },
   {
@@ -431,7 +431,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'bioacoustics',
     connectionType: 'representation_learning',
     sharedGene: 'High-Dimensional Biological Embeddings: DNA Bases → Rainforest Soundscapes',
-    paaQuestion: 'How does reading genetic code translate into listening to 10,000 animal species?',
+    paaQuestion: "How does Enformer's attention across the human genome translate into Perch's acoustic model listening to 10,000 animal species?",
     story: 'Both DNA sequences and rainforest audio spectrograms are continuous, noisy biological signals where rare signals (disease mutations or endangered bird calls) are buried in petabytes of background noise. DeepMind used self-supervised foundation representations across both.'
   },
   {
@@ -440,7 +440,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphageometry',
     connectionType: 'symbolic_biology',
     sharedGene: 'Biological Syntactic Grammars → Formal Axiomatic Deductions',
-    paaQuestion: 'Can neuro-symbolic reasoning verify complex biological pathways without error?',
+    paaQuestion: "How can Enformer's complex genetic regulatory circuits be verified using AlphaGeometry's formal deductive logic?",
     story: 'Genetic regulatory networks operate like complex logical circuits with AND/OR transcription switches. Research from AlphaGeometry into combining neural intuition with formal deductive logic is being applied to verify synthetic biology gene circuits.'
   },
 
@@ -451,7 +451,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'ferminet',
     connectionType: 'mathematical_foundations',
     sharedGene: 'Formal Theorem Proving → Quantum Wavefunction Antisymmetry Constraints',
-    paaQuestion: 'Can formal mathematical verification prove quantum wavefunction approximations?',
+    paaQuestion: "How does AlphaGeometry's formal theorem proving verify that neural wavefunctions in FermiNet strictly obey quantum symmetry?",
     story: 'Ensuring that neural networks strictly obey mathematical symmetries (such as fermionic antisymmetry in quantum physics) requires formal verification. AlphaGeometry’s neuro-symbolic techniques help formally prove physical invariant bounds.'
   },
   {
@@ -460,7 +460,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'fusion',
     connectionType: 'provable_safety',
     sharedGene: 'Neuro-Symbolic Deductions → Provably Stable Plasma Controllers',
-    paaQuestion: 'How can formal logic ensure magnetic plasma control policies remain provably stable?',
+    paaQuestion: "How can AlphaGeometry's neuro-symbolic logic mathematically guarantee that Autonomous Fusion's plasma controllers never breach reactor walls?",
     story: 'Pure neural controllers can be unpredictable under rare edge conditions. By integrating AlphaGeometry’s symbolic deduction with deep reinforcement learning, engineers create hybrid controllers that are formally guaranteed never to drive plasma into reactor walls.'
   },
   {
@@ -469,7 +469,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'alphafold',
     connectionType: 'geometric_intuition',
     sharedGene: 'Synthetic Diagram Constructions → Biomolecular Coordinate Manifolds',
-    paaQuestion: 'Could formal logic co-pilots prove mathematical bounds on protein docking?',
+    paaQuestion: "How can AlphaGeometry's synthetic proof engine prove strict physical boundary laws on AlphaFold 3's protein docking pockets?",
     story: 'AlphaGeometry synthesizes 100 million geometric proofs without human demonstration. Researchers are adapting these synthetic axiomatic engines to verify that predicted protein-ligand docking pockets satisfy strict steric and thermodynamic boundary laws.'
   },
 
@@ -480,7 +480,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'wildfire',
     connectionType: 'early_detection',
     sharedGene: 'Acoustic Canopy Listening → Satellite Thermal Fire Mapping',
-    paaQuestion: 'How do canopy acoustic sensors collaborate with satellites to detect wildfire ignition?',
+    paaQuestion: "How do Perch's canopy microphones detect illegal logging before fires ignite, collaborating with Fire AI's satellite thermal tracking?",
     story: 'Before a wildfire is large enough to be spotted by geostationary weather satellites, canopy microphones detect the distinct acoustic crackle of ignition and unauthorized human vehicles in remote conservation reserves, giving frontline crews an immediate head start.'
   },
   {
@@ -489,7 +489,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'flood_hub',
     connectionType: 'riparian_preservation',
     sharedGene: 'Soundscape Bio-Indicators → Mangrove Wetland Flood Barriers',
-    paaQuestion: 'How do bioacoustic soundscapes guide river restoration and natural flood barriers?',
+    paaQuestion: "How do Perch's bioacoustic soundscapes guide river wetland restoration to strengthen Flood Hub's natural flood barriers?",
     story: 'Healthy mangrove wetlands reduce storm surge and river flood severity by up to 50%. Ecologists use Perch to track snapping shrimp and bird vocalizations, using bioacoustic health metrics to guide where to restore natural riverine wetlands.'
   },
   {
@@ -498,7 +498,7 @@ export const LINEAGE_CONNECTIONS = [
     to: 'enformer',
     connectionType: 'biodiversity_genomics',
     sharedGene: 'Acoustic Species Identification → Environmental DNA (eDNA) Sequencing',
-    paaQuestion: 'How do acoustic foundation models pair with environmental DNA sequencing?',
+    paaQuestion: "How does Perch's audio species identification pair with Enformer's genomic sequence analysis of environmental DNA?",
     story: 'By combining Perch’s audio identification of wild species with Enformer’s genomic sequence analysis from water and soil eDNA samples, scientists can map entire biodiversity ecosystems without capturing or disturbing animals.'
   }
 ];
@@ -557,3 +557,41 @@ export const STARTING_QUESTIONS = [
   }
 ];
 
+
+// Helper function to find or synthesize a connection explanation between ANY two breakthroughs
+export function getLineageConnection(fromId, toId) {
+  if (!fromId || !toId || fromId === toId) return null;
+
+  // 1. Direct connection (from -> to)
+  const direct = LINEAGE_CONNECTIONS.find((c) => c.from === fromId && c.to === toId);
+  if (direct) return direct;
+
+  // 2. Reverse connection (to -> from)
+  const reverse = LINEAGE_CONNECTIONS.find((c) => c.from === toId && c.to === fromId);
+  if (reverse) {
+    const fromNode = LINEAGE_NODES.find((n) => n.id === fromId);
+    const toNode = LINEAGE_NODES.find((n) => n.id === toId);
+    return {
+      id: `${fromId}_${toId}`,
+      from: fromId,
+      to: toId,
+      sharedGene: reverse.sharedGene,
+      paaQuestion: "`How does ${fromNode?.title || fromId} connect with ${toNode?.title || toId}?`",
+      story: reverse.story
+    };
+  }
+
+  // 3. Synthesized bridge between any other pair of breakthroughs in the constellation
+  const fromNode = LINEAGE_NODES.find((n) => n.id === fromId);
+  const toNode = LINEAGE_NODES.find((n) => n.id === toId);
+  if (!fromNode || !toNode) return null;
+
+  return {
+    id: `${fromId}_${toId}`,
+    from: fromId,
+    to: toId,
+    sharedGene: `${fromNode.leadGene} → ${toNode.leadGene}`,
+    paaQuestion: "`How does ${fromNode.title} connect to ${toNode.title}?`",
+    story: `Both breakthroughs belong to Google's shared foundation in deep learning. While ${fromNode.title} focuses on ${fromNode.subtitle.toLowerCase()} (${fromNode.summary}), its core architectural principles—such as high-dimensional representation learning and spatial attention—directly informed the computational methods in ${toNode.title} for ${toNode.subtitle.toLowerCase()}.`
+  };
+}

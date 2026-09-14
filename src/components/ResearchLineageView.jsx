@@ -3,7 +3,8 @@ import {
   DOMAINS,
   LINEAGE_NODES,
   LINEAGE_CONNECTIONS,
-  STARTING_QUESTIONS
+  STARTING_QUESTIONS,
+  getLineageConnection
 } from '../data/lineageGraphData';
 import {
   ArrowRight,
@@ -47,7 +48,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
       const params = new URLSearchParams(window.location.search);
       const n = params.get('node');
       if (n && n !== 'alphafold' && LINEAGE_NODES.some((item) => item.id === n)) {
-        const conn = LINEAGE_CONNECTIONS.find((c) => c.from === 'alphafold' && c.to === n);
+        const conn = getLineageConnection('alphafold', n);
         return [
           { nodeId: 'alphafold', viaConnectionId: null, question: null },
           { nodeId: n, viaConnectionId: conn?.id || null, question: conn?.paaQuestion || null }
@@ -100,19 +101,19 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     return LINEAGE_NODES.filter((n) => !visitedNodeIds.has(n.id));
   }, [visitedNodeIds]);
 
-  // If the last step in the trail was a leap, find the bridging connection
-  const lastTrailStep = trail[trail.length - 1];
-  const lastConnection = useMemo(() => {
-    if (!lastTrailStep || !lastTrailStep.viaConnectionId) return null;
-    return LINEAGE_CONNECTIONS.find((c) => c.id === lastTrailStep.viaConnectionId) || null;
-  }, [lastTrailStep]);
-
   // Previous node in the trail (for visual bridge)
   const previousNode = useMemo(() => {
     if (trail.length < 2) return null;
     const prevStep = trail[trail.length - 2];
     return LINEAGE_NODES.find((n) => n.id === prevStep.nodeId) || null;
   }, [trail]);
+
+  // The bridging connection explaining how previousNode connects to activeNode
+  // Guarantees an explanation is ALWAYS found and displayed on subsequent steps
+  const lastConnection = useMemo(() => {
+    if (!previousNode || !activeNode || previousNode.id === activeNode.id) return null;
+    return getLineageConnection(previousNode.id, activeNode.id);
+  }, [previousNode, activeNode]);
 
   // Disciplines crossed metric
   const disciplinesCount = useMemo(() => {
@@ -140,10 +141,15 @@ export function ResearchLineageView({ onOpenProjectModal }) {
     setHoveredQuestionTargetId(null);
   };
 
-  // Select node directly - prevents cycles by rewinding if node was already visited
+  // Select node directly - prevents cycles by rewinding if node was already visited,
+  // and always resolves the connection story from the previous node to this node
   const handleSelectNode = (nodeId, connection = null, questionText = null) => {
+    const fromId = selectedNodeId;
     setSelectedNodeId(nodeId);
     setHoveredQuestionTargetId(null);
+
+    // Resolve connection between current node and clicked node if not passed
+    const resolvedConn = connection || getLineageConnection(fromId, nodeId);
 
     setTrail((prev) => {
       if (prev[prev.length - 1]?.nodeId === nodeId) return prev;
@@ -154,13 +160,13 @@ export function ResearchLineageView({ onOpenProjectModal }) {
         return prev.slice(0, existingIndex + 1);
       }
 
-      // Otherwise append new step to the trail
+      // Otherwise append new step to the trail with its connecting bridge
       return [
         ...prev,
         {
           nodeId,
-          viaConnectionId: connection?.id || null,
-          question: questionText || connection?.paaQuestion || null
+          viaConnectionId: resolvedConn?.id || `${fromId}_${nodeId}`,
+          question: questionText || resolvedConn?.paaQuestion || null
         }
       ];
     });
@@ -592,8 +598,9 @@ export function ResearchLineageView({ onOpenProjectModal }) {
           </div>
 
           <div className="dossier-content-scroll">
-            {/* Visual Lineage Bridge: How did we get from Step A to Step B? */}
-            {lastConnection && previousNode && lastTrailStep.nodeId === activeNode.id ? (
+            {/* Visual Lineage Bridge: How previousNode connects to activeNode */}
+            {/* Guarantees that clicking one node after another ALWAYS explains the connection! */}
+            {previousNode && activeNode && previousNode.id !== activeNode.id && lastConnection ? (
               <div className="easy-bridge-card">
                 <div className="easy-bridge-top">
                   <span className="bridge-step-chip">{previousNode.title}</span>
@@ -643,7 +650,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
               </div>
               <p className="paa-intro-hint">
                 {outgoingConnections.length > 0
-                  ? "Hover to see where each question points on the map, or click to leap forward."
+                  ? "Hover to highlight where each question leads, or click to leap forward."
                   : "All direct pathways from this breakthrough are already in your trail."}
               </p>
 
@@ -662,7 +669,7 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                       >
                         <div className="paa-card-target-row">
                           <span className="paa-target-chip">
-                            Leap to {conn.targetNode.title}
+                            {activeNode.title} → {conn.targetNode.title}
                           </span>
                           <ArrowRight size={13} className="paa-arrow" />
                         </div>
