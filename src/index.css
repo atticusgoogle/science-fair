@@ -3197,3 +3197,732 @@ body {
   background: #000000;
   transform: scale(1.05);
 }
+
+/* ==========================================================================
+   RESEARCH LINEAGE (INTERCONNECTEDNESS & RABBIT HOLE MAP)
+   Studio Aesthetic: Architectural Drafting Table, Obsidian Ink, Blueprint Indigo, Amber Ochre
+   ========================================================================== */
+.research-lineage-container {
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-top: 6px;
+  margin-bottom: 24px;
+}
+
+/* Top Strip: Curated Starter Rabbit Holes */
+.lineage-top-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border-hairline);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lineage-top-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.strip-label-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-right: 8px;
+  border-right: 1px solid var(--border-hairline);
+}
+
+.strip-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: #121316;
+  letter-spacing: -0.01em;
+}
+
+.compass-icon {
+  color: #2C5282;
+}
+
+.curated-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.curated-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FAFAF8;
+  border: 1px solid #E2E8F0;
+  border-radius: 100px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.curated-pill-btn:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+.curated-pill-btn.active {
+  background: #121316;
+  border-color: #121316;
+  color: #FFFFFF;
+}
+
+.pill-spark {
+  color: #B45309;
+}
+
+.curated-pill-btn.active .pill-spark {
+  color: #FCD34D;
+}
+
+.curated-btn-title {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: inherit;
+}
+
+.curated-btn-tagline {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: #64748B;
+  margin-left: 2px;
+}
+
+.curated-pill-btn.active .curated-btn-tagline {
+  color: #94A3B8;
+}
+
+/* Main Split Layout: 65% Canvas + 35% Dossier */
+.lineage-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  min-height: 640px;
+  height: 680px;
+  background: #FAFAF8;
+}
+
+@media (max-width: 1024px) {
+  .lineage-main-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+/* Canvas Area */
+.lineage-canvas-wrapper {
+  position: relative;
+  overflow: hidden;
+  background: #FAFAF8;
+  border-right: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.lineage-canvas-wrapper.panning {
+  cursor: grabbing;
+}
+
+.lineage-svg-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lineage-canvas-wrapper.panning .lineage-svg-canvas {
+  cursor: grabbing;
+}
+
+.canvas-floating-controls {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.zoom-btn-group {
+  display: flex;
+  gap: 4px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+}
+
+.canvas-tool-btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: #121316;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.canvas-tool-btn:hover {
+  background: #F1F5F9;
+}
+
+.canvas-legend-hint {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border-hairline);
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 9.5px;
+  font-family: var(--font-body);
+  color: #64748B;
+  pointer-events: auto;
+  align-self: flex-start;
+}
+
+/* SVG Elements Styling */
+.domain-territory-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.connection-path-wrap {
+  cursor: pointer;
+}
+
+.connection-line {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.connection-hit-area {
+  pointer-events: stroke;
+}
+
+.connection-hit-area:hover + .connection-line {
+  stroke: #B45309;
+  stroke-width: 3;
+}
+
+.node-selection-halo {
+  animation: rotateDashes 20s linear infinite;
+}
+
+@keyframes rotateDashes {
+  to {
+    stroke-dashoffset: 100;
+  }
+}
+
+.node-title-label {
+  pointer-events: none;
+}
+
+.node-subtitle-label {
+  pointer-events: none;
+}
+
+/* Linear Dossier Panel (35%) */
+.lineage-dossier-panel {
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dossier-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border-hairline);
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dossier-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.domain-indicator-pill {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.dossier-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #64748B;
+}
+
+.dossier-award-tag {
+  background: #FEF3C7;
+  color: #92400E;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #FDE68A;
+}
+
+.dossier-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: #121316;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dossier-subtitle {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.open-exhibit-btn {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #121316;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  align-self: flex-start;
+}
+
+.open-exhibit-btn:hover {
+  background: #000000;
+  transform: translateY(-1px);
+}
+
+/* Dossier Content Scroll Area */
+.dossier-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Lineage Bridge Notification Card */
+.lineage-bridge-card {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeInBridge 0.25s ease;
+}
+
+@keyframes fadeInBridge {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bridge-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #B45309;
+}
+
+.bridge-icon {
+  flex-shrink: 0;
+}
+
+.bridge-label {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.bridge-question {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: #121316;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.bridge-story {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  color: #4A5568;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.bridge-gene-tag {
+  font-size: 10px;
+  color: #78350F;
+  background: rgba(180, 83, 9, 0.08);
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-top: 2px;
+}
+
+.gene-title {
+  font-weight: 600;
+}
+
+/* Dossier Sections */
+.dossier-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #121316;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.dossier-body-text {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #374151;
+  max-width: 65ch;
+  margin: 0;
+}
+
+.core-gene-banner {
+  display: flex;
+}
+
+.gene-pill {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: #2C5282;
+  background: #EBF8FF;
+  border: 1px solid #BEE3F8;
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.tools-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tool-tag-pill {
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: var(--font-body);
+  font-size: 10.5px;
+  color: #374151;
+}
+
+/* People Also Asked Engine */
+.paa-section {
+  border-top: 1px solid var(--border-hairline);
+  padding-top: 14px;
+}
+
+.paa-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paa-icon {
+  color: #B45309;
+}
+
+.paa-title {
+  color: #121316;
+}
+
+.paa-intro-hint {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #64748B;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.paa-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paa-question-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #FAFAF8;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.paa-question-card:hover {
+  background: #FFFFFF;
+  border-color: #B45309;
+  box-shadow: 0 2px 10px rgba(180, 83, 9, 0.08);
+  transform: translateX(2px);
+}
+
+.paa-question-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.paa-target-chip {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #2C5282;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.paa-question-heading {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: #121316;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.paa-shared-preview {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: #64748B;
+  margin: 0;
+}
+
+.paa-arrow-badge {
+  color: #94A3B8;
+  transition: color 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.paa-question-card:hover .paa-arrow-badge {
+  color: #B45309;
+  transform: translateX(2px);
+}
+
+/* Bottom Ribbon: Rabbit Hole Trail Tracker */
+.lineage-trail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #FFFFFF;
+  border-top: 1px solid var(--border-hairline);
+}
+
+@media (max-width: 768px) {
+  .lineage-trail-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.trail-metrics-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.trail-count-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #121316;
+}
+
+.flame-icon {
+  color: #B45309;
+}
+
+.disciplines-count {
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  color: #64748B;
+}
+
+/* Trail Breadcrumb Rail */
+.trail-breadcrumbs-rail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+  padding: 2px 0;
+}
+
+.trail-breadcrumbs-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.trail-connector-arrow {
+  color: #CBD5E1;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.trail-node-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FAFAF8;
+  border: 1px solid #E2E8F0;
+  border-radius: 100px;
+  padding: 4px 10px 4px 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.trail-node-btn:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+.trail-node-btn.active {
+  background: #121316;
+  border-color: #121316;
+  color: #FFFFFF;
+}
+
+.trail-step-num {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #1E293B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.trail-node-btn.active .trail-step-num {
+  background: #B45309;
+  color: #FFFFFF;
+}
+
+.trail-node-name {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Trail Action Buttons */
+.trail-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.trail-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #FAFAF8;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: #121316;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.trail-action-btn:hover {
+  background: #F1F5F9;
+}
+
+.trail-action-btn.share {
+  color: #2C5282;
+  border-color: #CBD5E1;
+}
+

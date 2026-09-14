@@ -4,7 +4,8 @@ import { Header } from './components/Header';
 import { TrifoldCard } from './components/TrifoldCard';
 import { TrifoldModal } from './components/TrifoldModal';
 import { SlidingGallery } from './components/SlidingGallery';
-import { Layers, LayoutGrid } from 'lucide-react';
+import { Layers, LayoutGrid, GitFork } from 'lucide-react';
+import { ResearchLineageView } from './components/ResearchLineageView';
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState(() => {
@@ -32,7 +33,9 @@ export default function App() {
   const [viewMode, setViewMode] = useState(() => {
     try {
       const params = new URLSearchParams(window.location.search);
-      return params.get('view') === 'grid' ? 'grid' : 'promenade';
+      const v = params.get('view');
+      if (v === 'lineage') return 'lineage';
+      return v === 'grid' ? 'grid' : 'promenade';
     } catch {
       return 'promenade';
     }
@@ -84,16 +87,20 @@ export default function App() {
           <div className="section-intro-bar">
             <div className="intro-left">
               <span className="count-label">
-                Showing {filteredProjects.length} study exhibits
+                {viewMode === 'lineage'
+                  ? 'The Constellation of Discovery • 10 Interconnected Breakthroughs'
+                  : `Showing ${filteredProjects.length} study exhibits`}
               </span>
               <span className="tactile-hint">
                 {viewMode === 'promenade'
                   ? 'Swipe or use arrow keys to browse provocative questions with live models'
+                  : viewMode === 'lineage'
+                  ? 'Trace how algorithms leaped across disciplines — follow questions down the rabbit hole'
                   : 'Select any standing board to unfold its research spread'}
               </span>
             </div>
 
-            {/* View Mode Switcher: Promenade vs Grid */}
+            {/* View Mode Switcher: Promenade vs Grid vs Lineage */}
             <div className="view-mode-toggle-group">
               <button
                 className={`view-mode-btn ${viewMode === 'promenade' ? 'active' : ''}`}
@@ -111,10 +118,25 @@ export default function App() {
                 <LayoutGrid size={13} />
                 <span>Tabletop Grid</span>
               </button>
+              <button
+                className={`view-mode-btn ${viewMode === 'lineage' ? 'active' : ''}`}
+                onClick={() => setViewMode('lineage')}
+                title="Research Lineage: Follow curiosity rabbit holes across Google research"
+              >
+                <GitFork size={13} />
+                <span>Research Lineage</span>
+              </button>
             </div>
           </div>
 
-          {filteredProjects.length === 0 ? (
+          {viewMode === 'lineage' ? (
+            <ResearchLineageView
+              onOpenProjectModal={(projectId) => {
+                const proj = PROJECTS_DATA.find((p) => p.id === projectId);
+                if (proj) handleSelectProject(proj);
+              }}
+            />
+          ) : filteredProjects.length === 0 ? (
             <div className="empty-results-box">
               <p>No research projects matched "{searchTerm}".</p>
               <button className="reset-filter-btn" onClick={() => { setSearchTerm(''); setSelectedCategory('All Breakthroughs'); }}>
