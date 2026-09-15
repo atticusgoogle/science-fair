@@ -240,6 +240,15 @@ export const LINEAGE_CONNECTIONS = [
     paaQuestion: "How did predicting molecular structures in AlphaFold 3 push scientists toward FermiNet's first-principles quantum chemistry?",
     story: "AlphaFold predicts where atoms sit in 3D space by recognizing patterns from thousands of past experiments. But to design breakthrough medicines or understand why chemical bonds form at the deepest level, scientists must calculate how individual electrons move according to the laws of quantum physics. FermiNet takes this next leap: instead of learning from past examples, it uses neural networks to solve Schrödinger's fundamental quantum wave equations directly from scratch, calculating molecular energies with pure physics accuracy."
   },
+  {
+    id: 'af_alphageometry',
+    from: 'alphafold',
+    to: 'alphageometry',
+    connectionType: 'geometric_intuition',
+    sharedGene: 'Biomolecular Manifolds → Neuro-Symbolic Mathematical Proofs',
+    paaQuestion: "How does AlphaFold 3's 3D molecular geometry connect to AlphaGeometry solving Olympiad math?",
+    story: "Both AlphaFold 3 and AlphaGeometry tackle challenges where spatial geometry meets deep logical reasoning. AlphaFold maps how intricate proteins, DNA, and drug molecules dock together in 3D physical space, while AlphaGeometry invents new geometric constructions to solve International Mathematical Olympiad problems without human demonstration. DeepMind researchers adapted the geometric attention networks from AlphaFold to help AlphaGeometry visualize auxiliary lines, circles, and angles when searching for complex mathematical proofs."
+  },
 
   // --- From GNoME ---
   {
@@ -585,7 +594,7 @@ export function getLineageConnection(fromId, toId) {
       from: fromId,
       to: toId,
       sharedGene: reverse.sharedGene,
-      paaQuestion: `How does ${fromNode?.title || fromId} connect with ${toNode?.title || toId}?`,
+      paaQuestion: reverse.paaQuestion || `How does ${fromNode?.title || fromId} connect with ${toNode?.title || toId}?`,
       story: reverse.story
     };
   }

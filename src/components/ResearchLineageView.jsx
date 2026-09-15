@@ -566,7 +566,11 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                   <ArrowRight size={13} className="bridge-arrow" />
                   <span className="bridge-step-chip active">{activeNode.title}</span>
                 </div>
-                <h4 className="easy-bridge-question">"{lastConnection.paaQuestion}"</h4>
+                <h4 className="easy-bridge-question">
+                  {typeof lastConnection.paaQuestion === 'string'
+                    ? lastConnection.paaQuestion.replace(/^["'`]|["'`]$/g, '')
+                    : lastConnection.paaQuestion}
+                </h4>
                 <p className="easy-bridge-explanation">{lastConnection.story}</p>
               </div>
             ) : (
