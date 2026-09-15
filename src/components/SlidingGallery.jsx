@@ -83,8 +83,11 @@ export function SlidingGallery({ projects, onSelectProject }) {
       const slotCenter = rect.left + rect.width / 2;
       const rawPixelOffset = slotCenter - viewportCenter;
 
+      // Dead-zone snap threshold so the centered board stands 100% straight and symmetric
+      const effectiveOffset = Math.abs(rawPixelOffset) < 12 ? 0 : rawPixelOffset;
+
       // Normalize distance relative to slot spacing (-1 to +1 range for adjacent posters)
-      const normalizedOffset = rawPixelOffset / 960;
+      const normalizedOffset = effectiveOffset / 960;
       const signedDist = Math.max(-1.15, Math.min(1.15, normalizedOffset));
       const absDist = Math.min(1, Math.abs(signedDist));
 
@@ -171,13 +174,14 @@ export function SlidingGallery({ projects, onSelectProject }) {
     }
 
     const timer = requestAnimationFrame(() => {
-      if (initialIdx > 0) {
-        scrollToPoster(initialIdx, 'instant');
-      }
+      scrollToPoster(initialIdx, 'instant');
       updateScrollTransforms();
     });
 
-    const onResize = () => updateScrollTransforms();
+    const onResize = () => {
+      scrollToPoster(activeIndex, 'instant');
+      updateScrollTransforms();
+    };
     window.addEventListener('resize', onResize);
     return () => {
       cancelAnimationFrame(timer);
@@ -253,17 +257,13 @@ export function SlidingGallery({ projects, onSelectProject }) {
 
               {/* Grand 3-Panel Standing Trifold Assembly */}
               <div className="poster-3d-assembly">
-                {/* SMALLER LEFT FLAP: Tactile Foldable Wing with Catalog Number */}
+                {/* SMALLER LEFT FLAP: Pure Paperboard Wing with Catalog Number */}
                 <div className="poster-flap left">
                   <div className="poster-flap-surface left-flap-surface">
                     <div className="flap-index-badge">
                       <span className="idx-current">{String(idx + 1).padStart(2, '0')}</span>
                       <span className="idx-slash">/</span>
                       <span className="idx-total">{String(projects.length).padStart(2, '0')}</span>
-                    </div>
-                    <div className="flap-architectural-lines">
-                      <div className="flap-line w-70" />
-                      <div className="flap-line w-50" />
                     </div>
                   </div>
                 </div>
@@ -308,15 +308,9 @@ export function SlidingGallery({ projects, onSelectProject }) {
                   </div>
                 </div>
 
-                {/* SMALLER RIGHT FLAP: Symmetrical Tactile Foldable Wing */}
+                {/* SMALLER RIGHT FLAP: Pure Symmetrical Paperboard Wing */}
                 <div className="poster-flap right">
-                  <div className="poster-flap-surface right-flap-surface">
-                    <div className="flap-top-rule" />
-                    <div className="flap-architectural-lines bottom">
-                      <div className="flap-line w-60" />
-                      <div className="flap-line w-40" />
-                    </div>
-                  </div>
+                  <div className="poster-flap-surface right-flap-surface" />
                 </div>
               </div>
             </div>

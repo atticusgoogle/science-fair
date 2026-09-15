@@ -380,6 +380,14 @@ body {
   transition: z-index 0s;
 }
 
+.connected-poster-slot:first-child {
+  margin-left: 0;
+}
+
+.connected-poster-slot:last-child {
+  margin-right: 0;
+}
+
 .connected-poster-slot:active {
   cursor: grabbing;
 }
@@ -451,7 +459,7 @@ body {
   border: 1px solid #D6D3CC;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 28px 18px;
 }
 
@@ -487,35 +495,6 @@ body {
 .flap-index-badge .idx-total {
   color: var(--ink-muted);
 }
-
-.flap-top-rule {
-  width: 28px;
-  height: 2px;
-  background: var(--ink-primary);
-  opacity: 0.18;
-  margin-left: auto;
-}
-
-.flap-architectural-lines {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.flap-architectural-lines.bottom {
-  align-items: flex-end;
-}
-
-.flap-line {
-  height: 2px;
-  background: #E4E2DC;
-  border-radius: 1px;
-}
-
-.flap-line.w-70 { width: 70%; }
-.flap-line.w-60 { width: 60%; }
-.flap-line.w-50 { width: 50%; }
-.flap-line.w-40 { width: 40%; }
 
 /* GRAND CENTER PANEL: Houses both Main Editorial Text and Interactive Model */
 .poster-center-grand {
