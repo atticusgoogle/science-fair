@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Value-forward statements with highlighted breakthrough names (no question framing)
+// Value-forward statements with highlighted breakthrough names
 const VALUE_FORWARD_STATEMENTS = {
   alphafold: {
     highlight: 'Alphafold 3',
@@ -57,226 +56,261 @@ const VALUE_FORWARD_STATEMENTS = {
 };
 
 export function SlidingGallery({ projects, onSelectProject }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [foldState, setFoldState] = useState('open'); // 'open' | 'closing' | 'opening'
-  const isTransitioning = useRef(false);
-  const lastWheelTime = useRef(0);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const trackRef = useRef(null);
+  const slotRefs = useRef([]);
+  const rafRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollStartLeft = useRef(0);
+  const hasDragged = useRef(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Transition to a specific slide with realistic trifold board folding & unfolding
-  const goToSlide = useCallback((targetIndex) => {
-    if (isTransitioning.current || targetIndex === currentIndex) return;
-    isTransitioning.current = true;
+  // Continuously compute each poster's distance from viewport center
+  // and drive its 3D wing folding (--abs-dist, --signed-dist) in real time
+  const updateScrollTransforms = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
 
-    // 1. Fold the current trifold wings shut
-    setFoldState('closing');
+    const trackRect = track.getBoundingClientRect();
+    const viewportCenter = trackRect.left + trackRect.width / 2;
 
-    // 2. While folded, switch to target project and begin unfolding open
-    setTimeout(() => {
-      setCurrentIndex(targetIndex);
-      setFoldState('opening');
+    let closestIdx = 0;
+    let minDistance = Infinity;
 
-      // 3. Complete unfold into standing position
-      setTimeout(() => {
-        setFoldState('open');
-        isTransitioning.current = false;
-      }, 340);
-    }, 280);
-  }, [currentIndex]);
+    slotRefs.current.forEach((slotEl, idx) => {
+      if (!slotEl) return;
+      const rect = slotEl.getBoundingClientRect();
+      const slotCenter = rect.left + rect.width / 2;
+      const rawPixelOffset = slotCenter - viewportCenter;
 
-  const handlePrev = useCallback(() => {
-    const nextIdx = currentIndex > 0 ? currentIndex - 1 : projects.length - 1;
-    goToSlide(nextIdx);
-  }, [currentIndex, projects.length, goToSlide]);
+      // Normalize distance relative to slot spacing (-1 to +1 range for adjacent posters)
+      const normalizedOffset = rawPixelOffset / 880;
+      const signedDist = Math.max(-1.15, Math.min(1.15, normalizedOffset));
+      const absDist = Math.min(1, Math.abs(signedDist));
 
-  const handleNext = useCallback(() => {
-    const nextIdx = currentIndex < projects.length - 1 ? currentIndex + 1 : 0;
-    goToSlide(nextIdx);
-  }, [currentIndex, projects.length, goToSlide]);
+      slotEl.style.setProperty('--signed-dist', signedDist.toFixed(4));
+      slotEl.style.setProperty('--abs-dist', absDist.toFixed(4));
 
-  // Keyboard navigation (Left / Right arrow keys)
+      if (Math.abs(rawPixelOffset) < minDistance) {
+        minDistance = Math.abs(rawPixelOffset);
+        closestIdx = idx;
+      }
+    });
+
+    setActiveIndex(prev => (prev !== closestIdx ? closestIdx : prev));
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(updateScrollTransforms);
+  }, [updateScrollTransforms]);
+
+  // Scroll smoothly to a specific poster index
+  const scrollToPoster = useCallback((index, behavior = 'smooth') => {
+    const slotEl = slotRefs.current[index];
+    const track = trackRef.current;
+    if (!slotEl || !track) return;
+
+    const slotLeft = slotEl.offsetLeft;
+    const slotWidth = slotEl.offsetWidth;
+    const trackWidth = track.clientWidth;
+    const targetScrollLeft = slotLeft - (trackWidth - slotWidth) / 2;
+
+    track.scrollTo({
+      left: targetScrollLeft,
+      behavior
+    });
+  }, []);
+
+  // Mouse drag-to-scroll support (ignores clicks inside the interactive model viewport)
+  const handleMouseDown = (e) => {
+    if (e.target.closest('.center-model-viewport') || e.target.closest('button')) return;
+    const track = trackRef.current;
+    if (!track) return;
+    isDragging.current = true;
+    hasDragged.current = false;
+    startX.current = e.pageX - track.offsetLeft;
+    scrollStartLeft.current = track.scrollLeft;
+    track.style.scrollSnapType = 'none';
+    track.style.scrollBehavior = 'auto';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging.current) return;
+    const track = trackRef.current;
+    if (!track) return;
+    const x = e.pageX - track.offsetLeft;
+    const walk = (x - startX.current) * 1.25;
+    if (Math.abs(walk) > 6) {
+      hasDragged.current = true;
+    }
+    track.scrollLeft = scrollStartLeft.current - walk;
+  };
+
+  const endDrag = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const track = trackRef.current;
+    if (!track) return;
+    track.style.scrollSnapType = 'x mandatory';
+    track.style.scrollBehavior = 'smooth';
+    // Snap smoothly to closest poster
+    scrollToPoster(activeIndex, 'smooth');
+  };
+
+  // Initialize scroll position (and support ?slide= query param)
+  useEffect(() => {
+    let initialIdx = 0;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const s = parseInt(params.get('slide'), 10);
+      if (!isNaN(s) && s >= 0 && s < projects.length) {
+        initialIdx = s;
+      }
+    } catch {
+      // ignore
+    }
+
+    // Wait one frame for layout measurements
+    const timer = requestAnimationFrame(() => {
+      if (initialIdx > 0) {
+        scrollToPoster(initialIdx, 'instant');
+      }
+      updateScrollTransforms();
+    });
+
+    const onResize = () => updateScrollTransforms();
+    window.addEventListener('resize', onResize);
+    return () => {
+      cancelAnimationFrame(timer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [projects.length, scrollToPoster, updateScrollTransforms]);
+
+  // Keyboard navigation (ArrowLeft / ArrowRight) connected to smooth horizontal scroll
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowLeft') handlePrev();
-      if (e.key === 'ArrowRight') handleNext();
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const nextIdx = Math.max(0, activeIndex - 1);
+        scrollToPoster(nextIdx, 'smooth');
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIdx = Math.min(projects.length - 1, activeIndex + 1);
+        scrollToPoster(nextIdx, 'smooth');
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handlePrev, handleNext]);
+  }, [activeIndex, projects.length, scrollToPoster]);
 
-  // Horizontal wheel / trackpad scroll listener:
-  // As user scrolls left/right, the current trifold closes and opens to the next
+  // Convert vertical mouse wheel scrolling into smooth connected horizontal scroll
   const handleWheel = useCallback((e) => {
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
-    if (Math.abs(delta) < 25) return;
+    const track = trackRef.current;
+    if (!track) return;
 
-    const now = Date.now();
-    if (now - lastWheelTime.current < 450) return;
-    lastWheelTime.current = now;
-
-    if (delta > 0) {
-      handleNext();
-    } else {
-      handlePrev();
+    // If user is scrolling primarily vertically with a mouse wheel, glide horizontally
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey) {
+      // Allow native horizontal trackpad swipe to pass through untouched
+      track.scrollLeft += e.deltaY * 1.15;
     }
-  }, [handleNext, handlePrev]);
-
-  // Touch swipe support
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    const deltaX = touchStartX.current - touchEndX.current;
-    if (deltaX > 45) {
-      handleNext();
-    } else if (deltaX < -45) {
-      handlePrev();
-    }
-  };
+  }, []);
 
   if (!projects || projects.length === 0) {
     return null;
   }
 
-  const currentProject = projects[currentIndex];
-  const valueData = VALUE_FORWARD_STATEMENTS[currentProject.id] || {
-    highlight: currentProject.title.split(':')[0],
-    statement: currentProject.subtitle,
-    category: currentProject.category.toUpperCase()
-  };
-
-  // Monogram initials for left wing
-  const initials = currentProject.researcher.name
-    .split(' ')
-    .filter(w => !w.startsWith('Dr.') && !w.startsWith('&') && w.length > 0)
-    .slice(0, 2)
-    .map(w => w[0])
-    .join('');
-
   return (
-    <div
-      className="promenade-gallery-wrapper"
-      onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Top Header Toolbar */}
-      <div className="promenade-nav-bar">
-        <div className="promenade-counter">
-          <span className="current-num">{String(currentIndex + 1).padStart(2, '0')}</span>
-          <span className="divider">/</span>
-          <span className="total-num">{String(projects.length).padStart(2, '0')}</span>
-        </div>
+    <div className="connected-gallery-bleed">
+      <div
+        ref={trackRef}
+        className="connected-trifold-stream"
+        onScroll={handleScroll}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={endDrag}
+        onMouseLeave={endDrag}
+      >
+        {projects.map((project, idx) => {
+          const valueData = VALUE_FORWARD_STATEMENTS[project.id] || {
+            highlight: project.title.split(':')[0],
+            statement: project.subtitle,
+            category: project.category.toUpperCase()
+          };
+          const isActive = idx === activeIndex;
 
-        <div className="promenade-arrows">
-          <button
-            className="promenade-arrow-btn"
-            onClick={handlePrev}
-            aria-label="Previous exhibit"
-            title="Previous exhibit"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            className="promenade-arrow-btn"
-            onClick={handleNext}
-            aria-label="Next exhibit"
-            title="Next exhibit"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Main Sliding Slide Stage */}
-      <div className="promenade-slide-stage">
-        {/* Left Editorial Narrative Column (Value-Forward) */}
-        <div className="promenade-narrative-col">
-          <div className="promenade-eyebrow-clean">
-            <span>{valueData.category}</span>
-          </div>
-
-          {/* Value-Forward Headline with Highlighter on Project Name */}
-          <h2 className="promenade-value-headline">
-            <mark className="value-highlight-mark">{valueData.highlight}</mark>{' '}
-            {valueData.statement}
-          </h2>
-
-          {/* Clean Action Links: Only VIEW BOARD */}
-          <div className="promenade-editorial-links">
-            <button
-              type="button"
-              className="editorial-action-link"
-              onClick={() => onSelectProject(currentProject)}
+          return (
+            <div
+              key={project.id}
+              ref={(el) => { slotRefs.current[idx] = el; }}
+              className={`connected-poster-slot ${isActive ? 'is-active' : 'is-neighbor'}`}
+              onClick={() => {
+                if (!hasDragged.current && !isActive) {
+                  scrollToPoster(idx, 'smooth');
+                }
+              }}
             >
-              VIEW BOARD
-            </button>
-          </div>
-        </div>
+              {/* Diffused Tabletop Shadow underneath each standing trifold */}
+              <div className="poster-table-shadow" />
 
-        {/* Right Standing 3D Trifold Board View */}
-        <div className="promenade-trifold-stage">
-          {/* Standing Tabletop Drop Shadow */}
-          <div className={`promenade-board-shadow ${foldState}`} />
+              {/* Full 3-Panel Standing Trifold Poster */}
+              <div className="poster-3d-assembly">
+                {/* LEFT FOLD: Editorial Value Narrative */}
+                <div className="poster-wing left">
+                  <div className="poster-wing-surface left-surface">
+                    <div className="poster-eyebrow">
+                      <span>{valueData.category}</span>
+                    </div>
 
-          {/* 3-Panel Standing Trifold Assembly */}
-          <div className={`promenade-trifold-board ${foldState}`}>
-            {/* Left Wing */}
-            <div className="promenade-wing left">
-              <div className="wing-paperboard-surface">
-                <div className="wing-monogram">{initials}</div>
-                <div className="wing-lines">
-                  <div className="wline w-80" />
-                  <div className="wline w-60" />
-                  <div className="wline w-70" />
-                </div>
-                <div className="wing-field-badge">
-                  {currentProject.category.split('&')[0].trim()}
-                </div>
-              </div>
-            </div>
+                    <h2 className="poster-headline">
+                      <mark className="value-highlight-mark">{valueData.highlight}</mark>{' '}
+                      {valueData.statement}
+                    </h2>
 
-            {/* Center Panel (Houses the Interactive Computational Model) */}
-            <div className="promenade-center-panel">
-              <div className="center-board-surface">
-                <div className="center-model-viewport">
-                  <InteractiveWidget type={currentProject.demoType} project={currentProject} />
-                </div>
-              </div>
-            </div>
-
-            {/* Right Wing */}
-            <div className="promenade-wing right">
-              <div className="wing-paperboard-surface">
-                {currentProject.rightPanel?.stats?.[0] && (
-                  <div className="wing-stat-card">
-                    <strong className="wing-stat-num">{currentProject.rightPanel.stats[0].value}</strong>
-                    <span className="wing-stat-lbl">
-                      {currentProject.rightPanel.stats[0].label
-                        .split(' ')
-                        .filter(w => !['of', 'the', 'in', 'for', 'to'].includes(w.toLowerCase()))
-                        .slice(0, 2)
-                        .join(' ')}
-                    </span>
+                    <div className="poster-index-mark">
+                      <span className="idx-current">{String(idx + 1).padStart(2, '0')}</span>
+                      <span className="idx-slash">/</span>
+                      <span className="idx-total">{String(projects.length).padStart(2, '0')}</span>
+                    </div>
                   </div>
-                )}
-                {currentProject.award && (
-                  <div className="wing-award-ribbon">
-                    <span>{currentProject.award}</span>
+                </div>
+
+                {/* CENTER FOLD: Interactive Computational Model */}
+                <div className="poster-center">
+                  <div className="poster-center-surface">
+                    <div className="center-model-viewport">
+                      <InteractiveWidget type={project.demoType} project={project} />
+                    </div>
                   </div>
-                )}
+                </div>
+
+                {/* RIGHT FOLD: Minimalist Architectural Portal (Zero Clutter) */}
+                <div className="poster-wing right">
+                  <div className="poster-wing-surface right-surface">
+                    <div className="poster-right-top-rule" />
+
+                    <div className="poster-right-cta-wrap">
+                      <button
+                        type="button"
+                        className="poster-view-board-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectProject(project);
+                        }}
+                      >
+                        <span>VIEW BOARD</span>
+                        <span className="btn-arrow">↗</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
