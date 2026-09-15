@@ -554,15 +554,11 @@ body {
   margin: 0;
 }
 
-.value-highlight-mark {
-  background: #EAFF00;
-  color: #111111;
-  padding: 2px 8px;
-  border-radius: 2px;
-  font-weight: 600;
-  display: inline;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+.poster-highlight-name {
+  font-weight: 700;
+  color: var(--ink-primary);
+  background: none;
+  padding: 0;
 }
 
 .center-cta-row {
