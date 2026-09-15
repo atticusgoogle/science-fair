@@ -31,6 +31,19 @@ export function InteractivePaperChat({ project }) {
   const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Reset chat history when switching projects
+  useEffect(() => {
+    setMessages([
+      {
+        id: 'welcome-' + project.id,
+        sender: 'assistant',
+        text: `Ask me anything about ${project.title} in plain English — how it works, what it discovered, or why it matters.`
+      }
+    ]);
+    setInputValue('');
+    setIsTyping(false);
+  }, [project.id, project.title]);
+
   // Auto-scroll strictly inside the chat container
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -128,11 +141,6 @@ export function InteractivePaperChat({ project }) {
 
   return (
     <div className="paper-chat-container simple">
-      {/* Clean Minimal Header */}
-      <div className="simple-chat-header">
-        <h4 className="simple-chat-title">Ask the Paper</h4>
-      </div>
-
       {/* 3 Simple Prompt Chips */}
       <div className="simple-chips-row">
         {QUICK_PROMPTS.map((item, idx) => (

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { InteractivePaperChat } from './InteractivePaperChat';
-import { ExternalLink, Award, Sparkles, X, MessageSquareQuote, FileText } from 'lucide-react';
+import { StickyPaperChat } from './StickyPaperChat';
+import { Award, Sparkles, X, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   const [isUnfolded, setIsUnfolded] = useState(false);
-  const [rightPanelTab, setRightPanelTab] = useState('findings');
 
   useEffect(() => {
     // Trigger smooth 3D unfolding animation right after mount
@@ -34,7 +33,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
 
   return (
     <div className="trifold-modal-overlay" onClick={onClose}>
-      {/* Fixed Persistent Top-Right Close Button - Always visible regardless of scroll position or screen size */}
+      {/* Fixed Persistent Top-Right Close Button */}
       <button
         className="modal-fixed-close-btn"
         onClick={onClose}
@@ -43,6 +42,9 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
       >
         <X size={18} />
       </button>
+
+      {/* Sticky Right-Side "Talk to this Paper" Button & Slide-Over Chatbox Drawer */}
+      <StickyPaperChat project={project} initialOpen={initialOpenChat} />
 
       <div className="trifold-modal-viewport" onClick={(e) => e.stopPropagation()}>
         {/* 3D Hinged Trifold Spread */}
@@ -144,91 +146,46 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                 </div>
               )}
 
-              {/* Integrated Panel Mode Tabs */}
-              <div className="right-panel-tab-bar">
-                <button
-                  type="button"
-                  className={`panel-tab-btn ${rightPanelTab === 'findings' ? 'active' : ''}`}
-                  onClick={() => setRightPanelTab('findings')}
-                >
-                  <Sparkles size={13} />
-                  <span>Results & Impact</span>
-                </button>
-                <button
-                  type="button"
-                  className={`panel-tab-btn ${rightPanelTab === 'chat' ? 'active' : ''}`}
-                  onClick={() => setRightPanelTab('chat')}
-                >
-                  <MessageSquareQuote size={13} />
-                  <span>Ask the Paper</span>
-                  <span className="live-dot-mini" />
-                </button>
+              <div className="section-block">
+                <span className="panel-eyebrow">Results & scale</span>
+                <div className="stats-stack">
+                  {project.rightPanel.stats.map((st, idx) => (
+                    <div key={idx} className="stat-card">
+                      <strong className="stat-big">{st.value}</strong>
+                      <span className="stat-sub">{st.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {rightPanelTab === 'chat' ? (
-                <div className="embedded-chat-wrapper simple">
-                  <InteractivePaperChat project={project} />
+              <div className="section-block">
+                <span className="panel-eyebrow">Real-world impact</span>
+                <ul className="bullet-list">
+                  {project.rightPanel.impactPoints.map((pt, i) => (
+                    <li key={i}>{pt}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Researcher Direct Quote */}
+              <div className="researcher-quote-box">
+                <p className="quote-text">"{project.researcher.quote}"</p>
+                <span className="quote-author">— {project.researcher.name}</span>
+              </div>
+
+              {/* Primary Research Publication Card */}
+              <a
+                href={project.paperUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="physical-bridge-card publication-card"
+                title="Read full scientific paper"
+              >
+                <div className="bridge-icon"><FileText size={16} /></div>
+                <div>
+                  <strong>Primary Research Publication</strong>
                 </div>
-              ) : (
-                <>
-                  <div className="section-block">
-                    <span className="panel-eyebrow">Results & scale</span>
-                    <div className="stats-stack">
-                      {project.rightPanel.stats.map((st, idx) => (
-                        <div key={idx} className="stat-card">
-                          <strong className="stat-big">{st.value}</strong>
-                          <span className="stat-sub">{st.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="section-block">
-                    <span className="panel-eyebrow">Real-world impact</span>
-                    <ul className="bullet-list">
-                      {project.rightPanel.impactPoints.map((pt, i) => (
-                        <li key={i}>{pt}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Researcher Direct Quote */}
-                  <div className="researcher-quote-box">
-                    <p className="quote-text">"{project.researcher.quote}"</p>
-                    <span className="quote-author">— {project.researcher.name}</span>
-                  </div>
-
-                  {/* Interactive Paper Inquiry Card */}
-                  <div
-                    className="interactive-inquiry-card"
-                    onClick={() => setRightPanelTab('chat')}
-                    title="Ask the paper questions"
-                  >
-                    <div className="inquiry-icon-wrap">
-                      <MessageSquareQuote size={16} />
-                    </div>
-                    <div className="inquiry-content">
-                      <div className="inquiry-title-row">
-                        <strong>Talk to this Paper</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Primary Research Publication Card */}
-                  <a
-                    href={project.paperUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="physical-bridge-card publication-card"
-                    title="Read full scientific paper"
-                  >
-                    <div className="bridge-icon"><FileText size={16} /></div>
-                    <div>
-                      <strong>Primary Research Publication</strong>
-                    </div>
-                  </a>
-                </>
-              )}
+              </a>
             </div>
           </div>
         </div>

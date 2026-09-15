@@ -747,74 +747,63 @@ body {
 
 /* Center Panel (Flat) */
 .panel-center {
-  width: 180px;
+  width: 215px;
   z-index: 3;
+}
+
+.center-cardboard-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 /* Side Wings (Angled inward - folds toward the viewer) */
 .panel-wing {
-  width: 88px;
+  width: 68px;
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.45s ease;
 }
 
 .panel-wing.left {
   transform-origin: right center;
-  transform: rotateY(34deg);
+  transform: rotateY(36deg);
   box-shadow: -4px 6px 14px rgba(0, 0, 0, 0.06);
 }
 
 .panel-wing.right {
   transform-origin: left center;
-  transform: rotateY(-34deg);
+  transform: rotateY(-36deg);
   box-shadow: 4px 6px 14px rgba(0, 0, 0, 0.06);
 }
 
 /* Tactile Origami Folding Animation on Hover */
 .trifold-thumbnail-container:hover .panel-wing.left {
-  transform: rotateY(52deg);
+  transform: rotateY(54deg);
   box-shadow: -8px 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .trifold-thumbnail-container:hover .panel-wing.right {
-  transform: rotateY(-52deg);
+  transform: rotateY(-54deg);
   box-shadow: 8px 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* Mini Trifold Center Details */
-.taped-title-card {
+.taped-title-card.benefit-only-card {
   background: #FFFFFF;
   border-radius: 2px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
+  padding: 10px 10px;
+  margin-bottom: 0;
   position: relative;
   border-bottom: 1px solid var(--border-hairline);
 }
 
-.field-tag {
-  font-size: 8px;
+.benefit-frontload-phrase {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  display: block;
-  margin-bottom: 3px;
-}
-
-.board-title {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--ink-primary);
-  margin: 2px 0 4px;
-}
-
-.board-sub {
-  font-family: var(--font-body);
-  font-size: 9px;
-  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1.35;
+  color: var(--ink-primary);
+  margin: 0;
 }
 
 /* Miniature Visual Model Preview inside Center Panel */
@@ -822,7 +811,7 @@ body {
   background: #0f121a;
   border: 1px solid #232733;
   border-radius: 3px;
-  height: 66px;
+  height: 82px;
   overflow: hidden;
   position: relative;
   display: flex;
@@ -4092,6 +4081,115 @@ body {
 .trail-action-btn.share {
   color: #2C5282;
   border-color: #CBD5E1;
+}
+
+/* ==========================================================================
+   STICKY RIGHT-SIDE "TALK TO THIS PAPER" BUTTON & SLIDE-OVER CHAT DRAWER
+   ========================================================================== */
+.sticky-paper-chat-trigger {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2100;
+  background: #121316;
+  color: #FFFFFF;
+  border: 1px solid #2A2E39;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  box-shadow: -6px 8px 28px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition: padding-right 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sticky-paper-chat-trigger:hover {
+  padding-right: 22px;
+  background: #000000;
+  box-shadow: -8px 10px 32px rgba(0, 0, 0, 0.22);
+}
+
+.sticky-paper-chat-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 390px;
+  max-width: 92vw;
+  background: #FFFFFF;
+  border-left: 1px solid var(--border-hairline);
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.15);
+  z-index: 2600;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(102%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sticky-paper-chat-drawer.open {
+  transform: translateX(0);
+}
+
+.sticky-chat-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-hairline);
+  background: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.sticky-chat-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.sticky-chat-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-hairline);
+  background: #FAFAFA;
+  color: var(--ink-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.sticky-chat-close-btn:hover {
+  background: #121316;
+  color: #FFFFFF;
+  border-color: #121316;
+}
+
+.sticky-chat-drawer-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 16px 18px;
+  overflow: hidden;
+}
+
+.sticky-chat-drawer-body .paper-chat-container.simple {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 
