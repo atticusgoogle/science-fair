@@ -279,7 +279,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
                         </div>
 
                         <h2 className="poster-headline-grand">
-                          <strong className="poster-highlight-name">{valueData.highlight}</strong>{' '}
+                          <mark className="poster-highlight-name">{valueData.highlight}</mark>{' '}
                           {valueData.statement}
                         </h2>
 

@@ -555,10 +555,14 @@ body {
 }
 
 .poster-highlight-name {
-  font-weight: 700;
-  color: var(--ink-primary);
-  background: none;
-  padding: 0;
+  background: #FEF08A;
+  color: #111111;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 600;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .center-cta-row {
