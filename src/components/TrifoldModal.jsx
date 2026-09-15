@@ -39,44 +39,12 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
         className="modal-fixed-close-btn"
         onClick={onClose}
         aria-label="Close exhibit"
-        title="Close exhibit [ESC]"
+        title="Close exhibit"
       >
         <X size={18} />
-        <span className="esc-hint">ESC</span>
       </button>
 
       <div className="trifold-modal-viewport" onClick={(e) => e.stopPropagation()}>
-        {/* Top Floating Control Bar */}
-        <div className="modal-top-bar">
-          <div className="board-category-chip">
-            {project.category} • {project.year}
-          </div>
-          <div className="top-bar-actions">
-            <button
-              className={`action-pill-btn chat ${rightPanelTab === 'chat' ? 'active' : ''}`}
-              onClick={() => setRightPanelTab(rightPanelTab === 'chat' ? 'findings' : 'chat')}
-              title="Toggle between results and interactive paper Q&A"
-            >
-              <MessageSquareQuote size={14} />
-              <span>{rightPanelTab === 'chat' ? 'Results & impact' : 'Ask the paper'}</span>
-              {rightPanelTab === 'chat' && <span className="live-chat-dot" />}
-            </button>
-            <a
-              href={project.paperUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="action-pill-btn paper"
-              title="Read Published Scientific Paper"
-            >
-              <ExternalLink size={14} />
-              <span>Original paper</span>
-            </a>
-            <button className="close-btn" onClick={onClose} title="Close exhibit [ESC]">
-              <X size={18} />
-            </button>
-          </div>
-        </div>
-
         {/* 3D Hinged Trifold Spread */}
         <div className={`trifold-full-spread ${isUnfolded ? 'unfolded' : 'folded'}`}>
           {/* ================= LEFT PANEL ================= */}

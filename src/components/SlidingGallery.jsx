@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Value-forward statements with highlighted breakthrough names (no question framing)
 const VALUE_FORWARD_STATEMENTS = {
@@ -58,16 +58,42 @@ const VALUE_FORWARD_STATEMENTS = {
 
 export function SlidingGallery({ projects, onSelectProject }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [foldState, setFoldState] = useState('open'); // 'open' | 'closing' | 'opening'
+  const isTransitioning = useRef(false);
+  const lastWheelTime = useRef(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
+  // Transition to a specific slide with realistic trifold board folding & unfolding
+  const goToSlide = useCallback((targetIndex) => {
+    if (isTransitioning.current || targetIndex === currentIndex) return;
+    isTransitioning.current = true;
+
+    // 1. Fold the current trifold wings shut
+    setFoldState('closing');
+
+    // 2. While folded, switch to target project and begin unfolding open
+    setTimeout(() => {
+      setCurrentIndex(targetIndex);
+      setFoldState('opening');
+
+      // 3. Complete unfold into standing position
+      setTimeout(() => {
+        setFoldState('open');
+        isTransitioning.current = false;
+      }, 340);
+    }, 280);
+  }, [currentIndex]);
+
   const handlePrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : projects.length - 1));
-  }, [projects.length]);
+    const nextIdx = currentIndex > 0 ? currentIndex - 1 : projects.length - 1;
+    goToSlide(nextIdx);
+  }, [currentIndex, projects.length, goToSlide]);
 
   const handleNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev < projects.length - 1 ? prev + 1 : 0));
-  }, [projects.length]);
+    const nextIdx = currentIndex < projects.length - 1 ? currentIndex + 1 : 0;
+    goToSlide(nextIdx);
+  }, [currentIndex, projects.length, goToSlide]);
 
   // Keyboard navigation (Left / Right arrow keys)
   useEffect(() => {
@@ -80,6 +106,23 @@ export function SlidingGallery({ projects, onSelectProject }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePrev, handleNext]);
 
+  // Horizontal wheel / trackpad scroll listener:
+  // As user scrolls left/right, the current trifold closes and opens to the next
+  const handleWheel = useCallback((e) => {
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+    if (Math.abs(delta) < 25) return;
+
+    const now = Date.now();
+    if (now - lastWheelTime.current < 450) return;
+    lastWheelTime.current = now;
+
+    if (delta > 0) {
+      handleNext();
+    } else {
+      handlePrev();
+    }
+  }, [handleNext, handlePrev]);
+
   // Touch swipe support
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -91,9 +134,9 @@ export function SlidingGallery({ projects, onSelectProject }) {
 
   const handleTouchEnd = () => {
     const deltaX = touchStartX.current - touchEndX.current;
-    if (deltaX > 50) {
+    if (deltaX > 45) {
       handleNext();
-    } else if (deltaX < -50) {
+    } else if (deltaX < -45) {
       handlePrev();
     }
   };
@@ -109,9 +152,18 @@ export function SlidingGallery({ projects, onSelectProject }) {
     category: currentProject.category.toUpperCase()
   };
 
+  // Monogram initials for left wing
+  const initials = currentProject.researcher.name
+    .split(' ')
+    .filter(w => !w.startsWith('Dr.') && !w.startsWith('&') && w.length > 0)
+    .slice(0, 2)
+    .map(w => w[0])
+    .join('');
+
   return (
     <div
       className="promenade-gallery-wrapper"
+      onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -158,18 +210,8 @@ export function SlidingGallery({ projects, onSelectProject }) {
             {valueData.statement}
           </h2>
 
-          {/* Clean Action Links */}
+          {/* Clean Action Links: Only VIEW BOARD */}
           <div className="promenade-editorial-links">
-            {currentProject.paperUrl && (
-              <a
-                href={currentProject.paperUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="editorial-action-link"
-              >
-                READ PAPER
-              </a>
-            )}
             <button
               type="button"
               className="editorial-action-link"
@@ -177,52 +219,64 @@ export function SlidingGallery({ projects, onSelectProject }) {
             >
               VIEW BOARD
             </button>
-            <button
-              type="button"
-              className="editorial-action-link"
-              onClick={() => onSelectProject(currentProject, { openChat: true })}
-            >
-              PLAY WITH MODELS
-            </button>
           </div>
         </div>
 
-        {/* Right Interactive Visual Stage */}
-        <div className="promenade-visual-col">
-          <div className="promenade-visual-header">
-            <span className="visual-caption-tag">Live Model</span>
-            <button
-              className="visual-expand-btn"
-              onClick={() => onSelectProject(currentProject)}
-              title="Open full exhibit"
-            >
-              <Maximize2 size={13} />
-              <span>Full exhibit</span>
-            </button>
-          </div>
+        {/* Right Standing 3D Trifold Board View */}
+        <div className="promenade-trifold-stage">
+          {/* Standing Tabletop Drop Shadow */}
+          <div className={`promenade-board-shadow ${foldState}`} />
 
-          <div className="promenade-interactive-stage">
-            <InteractiveWidget type={currentProject.demoType} />
+          {/* 3-Panel Standing Trifold Assembly */}
+          <div className={`promenade-trifold-board ${foldState}`}>
+            {/* Left Wing */}
+            <div className="promenade-wing left">
+              <div className="wing-paperboard-surface">
+                <div className="wing-monogram">{initials}</div>
+                <div className="wing-lines">
+                  <div className="wline w-80" />
+                  <div className="wline w-60" />
+                  <div className="wline w-70" />
+                </div>
+                <div className="wing-field-badge">
+                  {currentProject.category.split('&')[0].trim()}
+                </div>
+              </div>
+            </div>
+
+            {/* Center Panel (Houses the Interactive Computational Model) */}
+            <div className="promenade-center-panel">
+              <div className="center-board-surface">
+                <div className="center-model-viewport">
+                  <InteractiveWidget type={currentProject.demoType} project={currentProject} />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Wing */}
+            <div className="promenade-wing right">
+              <div className="wing-paperboard-surface">
+                {currentProject.rightPanel?.stats?.[0] && (
+                  <div className="wing-stat-card">
+                    <strong className="wing-stat-num">{currentProject.rightPanel.stats[0].value}</strong>
+                    <span className="wing-stat-lbl">
+                      {currentProject.rightPanel.stats[0].label
+                        .split(' ')
+                        .filter(w => !['of', 'the', 'in', 'for', 'to'].includes(w.toLowerCase()))
+                        .slice(0, 2)
+                        .join(' ')}
+                    </span>
+                  </div>
+                )}
+                {currentProject.award && (
+                  <div className="wing-award-ribbon">
+                    <span>{currentProject.award}</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Thumbnail Strip */}
-      <div className="promenade-ticker-strip">
-        {projects.map((proj, idx) => {
-          const isActive = idx === currentIndex;
-          return (
-            <button
-              key={proj.id}
-              className={`promenade-thumb-item ${isActive ? 'active' : ''}`}
-              onClick={() => setCurrentIndex(idx)}
-              title={proj.title}
-            >
-              <span className="thumb-idx">{String(idx + 1).padStart(2, '0')}</span>
-              <strong className="thumb-title">{proj.title.split(':')[0]}</strong>
-            </button>
-          );
-        })}
       </div>
     </div>
   );
