@@ -66,7 +66,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Continuously compute each poster's distance from viewport center
-  // and drive its 3D wing folding (--abs-dist, --signed-dist) in real time
+  // and drive its 3D flap folding (--abs-dist, --signed-dist) in real time
   const updateScrollTransforms = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -84,7 +84,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
       const rawPixelOffset = slotCenter - viewportCenter;
 
       // Normalize distance relative to slot spacing (-1 to +1 range for adjacent posters)
-      const normalizedOffset = rawPixelOffset / 880;
+      const normalizedOffset = rawPixelOffset / 960;
       const signedDist = Math.max(-1.15, Math.min(1.15, normalizedOffset));
       const absDist = Math.min(1, Math.abs(signedDist));
 
@@ -122,7 +122,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
     });
   }, []);
 
-  // Mouse drag-to-scroll support (ignores clicks inside the interactive model viewport)
+  // Mouse drag-to-scroll support (ignores clicks inside interactive model viewport)
   const handleMouseDown = (e) => {
     if (e.target.closest('.center-model-viewport') || e.target.closest('button')) return;
     const track = trackRef.current;
@@ -154,7 +154,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
     if (!track) return;
     track.style.scrollSnapType = 'x mandatory';
     track.style.scrollBehavior = 'smooth';
-    // Snap smoothly to closest poster
     scrollToPoster(activeIndex, 'smooth');
   };
 
@@ -171,7 +170,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
       // ignore
     }
 
-    // Wait one frame for layout measurements
     const timer = requestAnimationFrame(() => {
       if (initialIdx > 0) {
         scrollToPoster(initialIdx, 'instant');
@@ -210,10 +208,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
   const handleWheel = useCallback((e) => {
     const track = trackRef.current;
     if (!track) return;
-
-    // If user is scrolling primarily vertically with a mouse wheel, glide horizontally
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && !e.shiftKey) {
-      // Allow native horizontal trackpad swipe to pass through untouched
       track.scrollLeft += e.deltaY * 1.15;
     }
   }, []);
@@ -256,54 +251,70 @@ export function SlidingGallery({ projects, onSelectProject }) {
               {/* Diffused Tabletop Shadow underneath each standing trifold */}
               <div className="poster-table-shadow" />
 
-              {/* Full 3-Panel Standing Trifold Poster */}
+              {/* Grand 3-Panel Standing Trifold Assembly */}
               <div className="poster-3d-assembly">
-                {/* LEFT FOLD: Editorial Value Narrative */}
-                <div className="poster-wing left">
-                  <div className="poster-wing-surface left-surface">
-                    <div className="poster-eyebrow">
-                      <span>{valueData.category}</span>
-                    </div>
-
-                    <h2 className="poster-headline">
-                      <mark className="value-highlight-mark">{valueData.highlight}</mark>{' '}
-                      {valueData.statement}
-                    </h2>
-
-                    <div className="poster-index-mark">
+                {/* SMALLER LEFT FLAP: Tactile Foldable Wing with Catalog Number */}
+                <div className="poster-flap left">
+                  <div className="poster-flap-surface left-flap-surface">
+                    <div className="flap-index-badge">
                       <span className="idx-current">{String(idx + 1).padStart(2, '0')}</span>
                       <span className="idx-slash">/</span>
                       <span className="idx-total">{String(projects.length).padStart(2, '0')}</span>
                     </div>
-                  </div>
-                </div>
-
-                {/* CENTER FOLD: Interactive Computational Model */}
-                <div className="poster-center">
-                  <div className="poster-center-surface">
-                    <div className="center-model-viewport">
-                      <InteractiveWidget type={project.demoType} project={project} />
+                    <div className="flap-architectural-lines">
+                      <div className="flap-line w-70" />
+                      <div className="flap-line w-50" />
                     </div>
                   </div>
                 </div>
 
-                {/* RIGHT FOLD: Minimalist Architectural Portal (Zero Clutter) */}
-                <div className="poster-wing right">
-                  <div className="poster-wing-surface right-surface">
-                    <div className="poster-right-top-rule" />
+                {/* GRAND CENTER PANEL: Houses BOTH Main Narrative Text & Interactive Model */}
+                <div className="poster-center-grand">
+                  <div className="poster-center-grand-surface">
+                    <div className="center-grand-grid">
+                      {/* Left Column inside Center Panel: Editorial Narrative & VIEW BOARD */}
+                      <div className="center-narrative-col">
+                        <div className="poster-eyebrow">
+                          <span>{valueData.category}</span>
+                        </div>
 
-                    <div className="poster-right-cta-wrap">
-                      <button
-                        type="button"
-                        className="poster-view-board-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectProject(project);
-                        }}
-                      >
-                        <span>VIEW BOARD</span>
-                        <span className="btn-arrow">↗</span>
-                      </button>
+                        <h2 className="poster-headline-grand">
+                          <mark className="value-highlight-mark">{valueData.highlight}</mark>{' '}
+                          {valueData.statement}
+                        </h2>
+
+                        <div className="center-cta-row">
+                          <button
+                            type="button"
+                            className="poster-view-board-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectProject(project);
+                            }}
+                          >
+                            <span>VIEW BOARD</span>
+                            <span className="btn-arrow">↗</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Right Column inside Center Panel: Interactive Computational Model */}
+                      <div className="center-model-col">
+                        <div className="center-model-viewport">
+                          <InteractiveWidget type={project.demoType} project={project} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SMALLER RIGHT FLAP: Symmetrical Tactile Foldable Wing */}
+                <div className="poster-flap right">
+                  <div className="poster-flap-surface right-flap-surface">
+                    <div className="flap-top-rule" />
+                    <div className="flap-architectural-lines bottom">
+                      <div className="flap-line w-60" />
+                      <div className="flap-line w-40" />
                     </div>
                   </div>
                 </div>

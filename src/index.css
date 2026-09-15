@@ -342,7 +342,7 @@ body {
   margin-left: calc(50% - 50vw);
   position: relative;
   overflow: hidden;
-  padding: 8px 0 36px;
+  padding: 12px 0 44px;
 }
 
 .connected-trifold-stream {
@@ -354,8 +354,8 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 36px calc(50vw - 460px) 64px;
-  perspective: 2000px;
+  padding: 40px calc(50vw - 510px) 72px;
+  perspective: 2200px;
 }
 
 .connected-trifold-stream::-webkit-scrollbar {
@@ -364,8 +364,8 @@ body {
 
 /* Individual Poster Slot along the horizontal stream */
 .connected-poster-slot {
-  width: 920px;
-  margin: 0 -36px;
+  width: 1020px;
+  margin: 0 -24px;
   flex-shrink: 0;
   scroll-snap-align: center;
   position: relative;
@@ -373,7 +373,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  perspective: 1800px;
+  perspective: 2000px;
   transform-style: preserve-3d;
   cursor: grab;
   z-index: 2;
@@ -392,19 +392,19 @@ body {
 /* Diffused Tabletop Shadow underneath each standing trifold poster */
 .poster-table-shadow {
   position: absolute;
-  bottom: -26px;
-  width: 88%;
-  height: 30px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0) 72%);
+  bottom: -30px;
+  width: 90%;
+  height: 34px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 72%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 1;
-  transform: scaleX(calc(1 - var(--abs-dist, 0) * 0.35)) translateY(calc(var(--abs-dist, 0) * -6px));
+  transform: scaleX(calc(1 - var(--abs-dist, 0) * 0.28)) translateY(calc(var(--abs-dist, 0) * -6px));
   opacity: calc(1 - var(--abs-dist, 0) * 0.45);
   transition: transform 0.08s linear, opacity 0.08s linear;
 }
 
-/* 3-Panel Standing Trifold Assembly driven continuously by scroll (--abs-dist & --signed-dist) */
+/* Grand 3-Panel Standing Trifold Assembly driven continuously by scroll */
 .poster-3d-assembly {
   display: flex;
   align-items: stretch;
@@ -412,78 +412,165 @@ body {
   transform-style: preserve-3d;
   position: relative;
   z-index: 2;
+  min-height: 500px;
   transform:
-    translateZ(calc(var(--abs-dist, 0) * -140px))
-    rotateY(calc(var(--signed-dist, 0) * -14deg))
+    translateZ(calc(var(--abs-dist, 0) * -150px))
+    rotateY(calc(var(--signed-dist, 0) * -12deg))
     scale(calc(1 - var(--abs-dist, 0) * 0.08));
-  opacity: calc(1 - var(--abs-dist, 0) * 0.12);
+  opacity: calc(1 - var(--abs-dist, 0) * 0.14);
   transition: transform 0.08s linear, opacity 0.08s linear;
 }
 
-/* Left & Right Hinged Paperboard Wings */
-.poster-wing {
+/* Symmetrical Smaller Foldable Side Flaps */
+.poster-flap {
+  width: 120px;
+  flex-shrink: 0;
   transform-style: preserve-3d;
-  z-index: 3;
+  z-index: 4;
   transition: transform 0.08s linear, box-shadow 0.15s ease;
 }
 
-/* Left Wing: Angled open (20deg) when centered, continuously folds inward (58deg) as you scroll away */
-.poster-wing.left {
-  width: 325px;
+/* Left Flap: Angled open (42deg) when centered, continuously folds inward shut (105deg) on scroll */
+.poster-flap.left {
   transform-origin: right center;
-  transform: rotateY(calc(20deg + var(--abs-dist, 0) * 38deg));
-  box-shadow: -12px 14px 32px rgba(0, 0, 0, 0.08);
+  transform: rotateY(calc(42deg + var(--abs-dist, 0) * 63deg));
+  box-shadow: -14px 16px 34px rgba(0, 0, 0, 0.09);
 }
 
-/* Right Wing: Minimalist architectural wing, angled open (-20deg) when centered, folds inward (-58deg) on scroll */
-.poster-wing.right {
-  width: 155px;
+/* Right Flap: Angled open (-42deg) when centered, continuously folds inward shut (-105deg) on scroll */
+.poster-flap.right {
   transform-origin: left center;
-  transform: rotateY(calc(-20deg - var(--abs-dist, 0) * 38deg));
-  box-shadow: 12px 14px 32px rgba(0, 0, 0, 0.08);
+  transform: rotateY(calc(-42deg - var(--abs-dist, 0) * 63deg));
+  box-shadow: 14px 16px 34px rgba(0, 0, 0, 0.09);
 }
 
-/* Paperboard Surfaces */
-.poster-wing-surface {
+/* Foldable Flap Paperboard Surfaces */
+.poster-flap-surface {
   height: 100%;
   box-sizing: border-box;
   border: 1px solid #D6D3CC;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 28px 18px;
 }
 
-.poster-wing-surface.left-surface {
+.left-flap-surface {
   border-radius: 4px 0 0 4px;
   border-right: 1px solid #C2BEB4;
-  background: linear-gradient(90deg, #FFFFFF 0%, #FDFDFB 93%, #ECE9E2 100%);
-  padding: 34px 30px 28px;
+  background: linear-gradient(90deg, #FFFFFF 0%, #FBFBF9 88%, #EBE8E0 100%);
+}
+
+.right-flap-surface {
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid #C2BEB4;
+  background: linear-gradient(270deg, #FFFFFF 0%, #FBFBF9 88%, #EBE8E0 100%);
+}
+
+.flap-index-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.flap-index-badge .idx-current {
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.flap-index-badge .idx-slash {
+  color: var(--border-medium);
+}
+
+.flap-index-badge .idx-total {
+  color: var(--ink-muted);
+}
+
+.flap-top-rule {
+  width: 28px;
+  height: 2px;
+  background: var(--ink-primary);
+  opacity: 0.18;
+  margin-left: auto;
+}
+
+.flap-architectural-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flap-architectural-lines.bottom {
+  align-items: flex-end;
+}
+
+.flap-line {
+  height: 2px;
+  background: #E4E2DC;
+  border-radius: 1px;
+}
+
+.flap-line.w-70 { width: 70%; }
+.flap-line.w-60 { width: 60%; }
+.flap-line.w-50 { width: 50%; }
+.flap-line.w-40 { width: 40%; }
+
+/* GRAND CENTER PANEL: Houses both Main Editorial Text and Interactive Model */
+.poster-center-grand {
+  width: 780px;
+  max-width: 100%;
+  z-index: 3;
+  transform-style: preserve-3d;
+}
+
+.poster-center-grand-surface {
+  background: #FFFFFF;
+  border-top: 1px solid #D6D3CC;
+  border-bottom: 1px solid #D6D3CC;
+  padding: 36px 38px;
+  height: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.center-grand-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.18fr;
+  gap: 34px;
+  align-items: center;
+  height: 100%;
+}
+
+.center-narrative-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 6px 0;
   gap: 20px;
 }
 
-.poster-wing-surface.right-surface {
-  border-radius: 0 4px 4px 0;
-  border-left: 1px solid #C2BEB4;
-  background: linear-gradient(270deg, #FFFFFF 0%, #FDFDFB 93%, #ECE9E2 100%);
-  padding: 34px 22px 28px;
-}
-
-/* Left Wing Editorial Typography */
+/* Editorial Typography inside Center Panel */
 .poster-eyebrow {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink-secondary);
 }
 
-.poster-headline {
+.poster-headline-grand {
   font-family: var(--font-display);
-  font-size: clamp(20px, 1.95vw, 25px);
+  font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 500;
-  line-height: 1.34;
-  letter-spacing: -0.015em;
+  line-height: 1.32;
+  letter-spacing: -0.018em;
   color: var(--ink-primary);
   margin: 0;
 }
@@ -491,7 +578,7 @@ body {
 .value-highlight-mark {
   background: #EAFF00;
   color: #111111;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 2px;
   font-weight: 600;
   display: inline;
@@ -499,81 +586,9 @@ body {
   -webkit-box-decoration-break: clone;
 }
 
-.poster-index-mark {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-display);
-  font-size: 12px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-hairline);
+.center-cta-row {
   margin-top: auto;
-}
-
-.poster-index-mark .idx-current {
-  font-weight: 700;
-  color: var(--ink-primary);
-}
-
-.poster-index-mark .idx-slash {
-  color: var(--border-medium);
-}
-
-.poster-index-mark .idx-total {
-  color: var(--ink-muted);
-}
-
-/* Center Panel (Interactive Computational Model) */
-.poster-center {
-  width: 440px;
-  max-width: 100%;
-  z-index: 2;
-  transform-style: preserve-3d;
-}
-
-.poster-center-surface {
-  background: #FFFFFF;
-  border-top: 1px solid #D6D3CC;
-  border-bottom: 1px solid #D6D3CC;
-  padding: 12px;
-  height: 100%;
-  box-sizing: border-box;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.center-model-viewport {
-  background: #080b11;
-  border: 1px solid #1c2433;
-  border-radius: 3px;
-  overflow: hidden;
-  width: 100%;
-}
-
-.center-model-viewport .demo-box {
-  width: 100%;
-  max-width: 100%;
-  background: transparent;
-  box-shadow: none;
-  border: none;
-  padding: 8px;
-}
-
-/* Right Wing Minimalist Architectural Portal */
-.poster-right-top-rule {
-  width: 28px;
-  height: 2px;
-  background: var(--ink-primary);
-  opacity: 0.2;
-}
-
-.poster-right-cta-wrap {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  padding-top: 12px;
 }
 
 .poster-view-board-btn {
@@ -581,14 +596,14 @@ body {
   align-items: center;
   gap: 6px;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink-primary);
   background: none;
   border: none;
-  padding: 8px 0;
+  padding: 6px 0;
   border-bottom: 1.5px solid var(--ink-primary);
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -604,13 +619,39 @@ body {
   line-height: 1;
 }
 
+/* Interactive Model Column inside Center Panel */
+.center-model-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.center-model-viewport {
+  background: #080b11;
+  border: 1px solid #1c2433;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+}
+
+.center-model-viewport .demo-box {
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 8px;
+}
+
 @media (max-width: 1024px) {
   .connected-trifold-stream {
     padding: 24px 24px 48px;
     gap: 32px;
   }
   .connected-poster-slot {
-    width: 88vw;
+    width: 90vw;
     margin: 0;
   }
   .poster-3d-assembly {
@@ -618,17 +659,14 @@ body {
     transform: none !important;
     width: 100%;
   }
-  .poster-wing.left,
-  .poster-center,
-  .poster-wing.right {
-    width: 100%;
-    transform: none !important;
+  .poster-flap {
+    display: none;
   }
-  .poster-wing-surface.left-surface,
-  .poster-center-surface,
-  .poster-wing-surface.right-surface {
-    border-radius: 4px;
-    border: 1px solid #D6D3CC;
+  .poster-center-grand {
+    width: 100%;
+  }
+  .center-grand-grid {
+    grid-template-columns: 1fr;
   }
 }
 
