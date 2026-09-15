@@ -544,9 +544,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
             </p>
 
             <div className="dossier-meta-actions">
-              <span className="dossier-stat-highlight">
-                {activeNode.keyStat}
-              </span>
               <button
                 type="button"
                 className="open-exhibit-btn compact"
@@ -571,10 +568,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                 </div>
                 <h4 className="easy-bridge-question">"{lastConnection.paaQuestion}"</h4>
                 <p className="easy-bridge-explanation">{lastConnection.story}</p>
-                <div className="easy-bridge-dna">
-                  <Cpu size={12} />
-                  <span><strong>Shared tool DNA:</strong> {lastConnection.sharedGene}</span>
-                </div>
               </div>
             ) : (
               <div className="easy-origin-card">
@@ -617,7 +610,6 @@ export function ResearchLineageView({ onOpenProjectModal }) {
                           <ArrowRight size={13} className="paa-arrow" />
                         </div>
                         <h4 className="paa-question-heading simplified">{conn.paaQuestion}</h4>
-                        <p className="paa-shared-preview simplified">{conn.sharedGene}</p>
                       </button>
                     );
                   })}

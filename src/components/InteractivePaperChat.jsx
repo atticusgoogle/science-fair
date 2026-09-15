@@ -131,7 +131,6 @@ export function InteractivePaperChat({ project }) {
       {/* Clean Minimal Header */}
       <div className="simple-chat-header">
         <h4 className="simple-chat-title">Ask the Paper</h4>
-        <span className="simple-chat-desc">Plain English Q&A • Grounded in {project.award ? 'published literature' : 'research'}</span>
       </div>
 
       {/* 3 Simple Prompt Chips */}

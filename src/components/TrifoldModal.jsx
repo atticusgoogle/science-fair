@@ -234,7 +234,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                   <div
                     className="interactive-inquiry-card"
                     onClick={() => setRightPanelTab('chat')}
-                    title="Ask the paper questions in plain English"
+                    title="Ask the paper questions"
                   >
                     <div className="inquiry-icon-wrap">
                       <MessageSquareQuote size={16} />
@@ -242,9 +242,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                     <div className="inquiry-content">
                       <div className="inquiry-title-row">
                         <strong>Talk to this Paper</strong>
-                        <span className="inquiry-badge">Interactive AI</span>
                       </div>
-                      <p>Ask anything about this research in plain English — from simple analogies to deep technical proofs ↗</p>
                     </div>
                   </div>
 
@@ -259,7 +257,6 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                     <div className="bridge-icon"><FileText size={16} /></div>
                     <div>
                       <strong>Primary Research Publication</strong>
-                      <p>Read the complete peer-reviewed paper in {project.award || 'scientific literature'} ↗</p>
                     </div>
                   </a>
                 </>
