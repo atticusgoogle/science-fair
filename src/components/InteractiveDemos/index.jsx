@@ -351,8 +351,13 @@ export function CrystalLatticeDemo() {
   };
 
   const verdict = isCurrentlyStable
-    ? { dot: 'green', text: `${current.formula}: stable crystal structure (${effectiveEnergy} eV/atom)` }
-    : { dot: 'red', text: `${current.formula}: unstable lattice, decomposes at room temperature` };
+    ? { dot: 'green', text: `${current.formula}: stable crystal structure (${effectiveEnergy > 0 ? `+${effectiveEnergy}` : effectiveEnergy} eV/atom)` }
+    : { dot: 'red', text: `${current.formula}: unstable lattice (${effectiveEnergy > 0 ? `+${effectiveEnergy}` : effectiveEnergy} eV/atom), decomposes` };
+
+  // Calculate pin position along 330px track: 0.0 eV is at center x = 190.
+  // Range is -0.09 to +0.09 eV mapped to x = 30 to x = 350
+  const clamped = Math.max(-0.09, Math.min(0.09, effectiveEnergy));
+  const pinX = 190 + (clamped / 0.09) * 145;
 
   return (
     <div className="demo-box">
@@ -362,23 +367,33 @@ export function CrystalLatticeDemo() {
           <span className="verdict-text">{verdict.text}</span>
         </div>
 
-        <svg width="100%" height="155" viewBox="0 0 380 155" style={{ background: '#080b11', display: 'block' }}>
-          <line x1="40" y1="125" x2="340" y2="125" stroke="#1e293b" strokeWidth="1" strokeDasharray="3,3" />
-          <line x1="190" y1="15" x2="190" y2="140" stroke="#1e293b" strokeWidth="1" strokeDasharray="3,3" />
+        <svg width="100%" height="182" viewBox="0 0 380 182" style={{ background: '#080b11', display: 'block' }}>
+          {/* Header guidance line inside SVG */}
+          <text x="14" y="15" fill="#64748b" fontSize="7.5" fontFamily="monospace">
+            Tap atom to simulate vacancy defect
+          </text>
+          <text x="366" y="15" fill="#94a3b8" fontSize="7.5" textAnchor="end" fontFamily="monospace">
+            {current.formula}
+          </text>
 
+          {/* Background perspective axes */}
+          <line x1="45" y1="108" x2="335" y2="108" stroke="#161e2e" strokeWidth="1" strokeDasharray="3,3" />
+          <line x1="190" y1="20" x2="190" y2="108" stroke="#161e2e" strokeWidth="1" strokeDasharray="3,3" />
+
+          {/* 3D Isometric Crystal Lattice */}
           {[0, 1, 2].map(layer => (
-            <g key={`layer-${layer}`} opacity={layer === 0 ? 0.6 : layer === 1 ? 0.85 : 1}>
+            <g key={`layer-${layer}`} opacity={layer === 0 ? 0.55 : layer === 1 ? 0.82 : 1}>
               {[0, 1, 2].map(row => (
                 <g key={`row-${row}`}>
                   {[0, 1, 2, 3].map(col => {
                     const idx = layer * 12 + row * 4 + col;
                     const isRemoved = vacancies.has(idx);
 
-                    const x = 75 + col * 65 + layer * 18 - row * 12;
-                    const y = 30 + row * 34 + layer * 12;
+                    const x = 75 + col * 62 + layer * 15 - row * 11;
+                    const y = 24 + row * 26 + layer * 10;
 
-                    const rightX = x + 65;
-                    const downY = y + 34;
+                    const rightX = x + 62;
+                    const downY = y + 26;
 
                     return (
                       <g key={idx}>
@@ -388,8 +403,8 @@ export function CrystalLatticeDemo() {
                             y1={y}
                             x2={rightX}
                             y2={y}
-                            stroke={isCurrentlyStable ? '#334155' : '#7f1d1d'}
-                            strokeWidth={isRemoved ? 1 : 2}
+                            stroke={isCurrentlyStable ? '#2a3649' : '#7f1d1d'}
+                            strokeWidth={isRemoved ? 1 : 1.8}
                             strokeDasharray={isRemoved ? '3,3' : 'none'}
                           />
                         )}
@@ -397,17 +412,17 @@ export function CrystalLatticeDemo() {
                           <line
                             x1={x}
                             y1={y}
-                            x2={x - 12}
+                            x2={x - 11}
                             y2={downY}
-                            stroke={isCurrentlyStable ? '#334155' : '#7f1d1d'}
-                            strokeWidth={isRemoved ? 1 : 2}
+                            stroke={isCurrentlyStable ? '#2a3649' : '#7f1d1d'}
+                            strokeWidth={isRemoved ? 1 : 1.8}
                             strokeDasharray={isRemoved ? '3,3' : 'none'}
                           />
                         )}
                         <circle
                           cx={x}
                           cy={y}
-                          r={isRemoved ? 4 : testing ? 9.5 : 8}
+                          r={isRemoved ? 3.5 : testing ? 9 : 7.5}
                           fill={isRemoved ? 'transparent' : current.color}
                           stroke={isRemoved ? '#64748b' : '#ffffff'}
                           strokeWidth={isRemoved ? 1.5 : 1}
@@ -425,7 +440,7 @@ export function CrystalLatticeDemo() {
                             y={y + 3}
                             textAnchor="middle"
                             fill="#000000"
-                            fontSize="7.5"
+                            fontSize="7"
                             fontWeight="bold"
                             pointerEvents="none"
                           >
@@ -440,31 +455,52 @@ export function CrystalLatticeDemo() {
             </g>
           ))}
 
-          {/* Convex Hull Bar */}
-          <rect x="25" y="138" width="330" height="7" rx="3.5" fill="#1e293b" />
-          <rect x="25" y="138" width="165" height="7" rx="3.5" fill="rgba(52, 211, 153, 0.4)" />
-          <line x1="190" y1="134" x2="190" y2="149" stroke="#ffffff" strokeWidth="2" />
-          <text x="190" y="131" fill="#94a3b8" fontSize="7" textAnchor="middle" fontFamily="monospace">
-            CONVEX HULL (0.0 eV)
+          {/* Separator Boundary above Convex Hull Gauge */}
+          <line x1="20" y1="120" x2="360" y2="120" stroke="#1c2433" strokeWidth="1" />
+
+          {/* Convex Hull Thermodynamic Stability Section */}
+          <text x="190" y="132" fill="#94a3b8" fontSize="7.5" textAnchor="middle" fontFamily="monospace">
+            Convex hull stability threshold (0.0 eV)
+          </text>
+          <text x="25" y="132" fill="#34d399" fontSize="6.5" fontFamily="monospace">
+            Stable zone
+          </text>
+          <text x="355" y="132" fill="#f87171" fontSize="6.5" textAnchor="end" fontFamily="monospace">
+            Decomposes
           </text>
 
-          {(() => {
-            const clamped = Math.max(-0.09, Math.min(0.09, effectiveEnergy));
-            const pinX = 190 + (clamped / 0.09) * 150;
-            return (
-              <circle
-                cx={pinX}
-                cy={141}
-                r={5.5}
-                fill={isCurrentlyStable ? '#34d399' : '#f87171'}
-                stroke="#ffffff"
-                strokeWidth="1.5"
-              />
-            );
-          })()}
-        </svg>
+          {/* Track background with dual-zone color gradient */}
+          <rect x="25" y="138" width="330" height="8" rx="4" fill="#0c111a" stroke="#1e293b" strokeWidth="1" />
+          <rect x="25" y="138" width="165" height="8" rx="4" fill="rgba(52, 211, 153, 0.25)" />
+          <rect x="190" y="138" width="165" height="8" rx="4" fill="rgba(248, 113, 113, 0.2)" />
+          <line x1="190" y1="134" x2="190" y2="150" stroke="#ffffff" strokeWidth="1.5" />
 
-        <div className="demo-drag-hint">tap any atom to test structural defects</div>
+          {/* Energy Level Pin Indicator */}
+          <circle
+            cx={pinX}
+            cy={142}
+            r={5.5}
+            fill={isCurrentlyStable ? '#34d399' : '#f87171'}
+            stroke="#ffffff"
+            strokeWidth="1.5"
+          />
+
+          {/* Readout labels below track */}
+          <text
+            x={pinX}
+            y="158"
+            fill={isCurrentlyStable ? '#34d399' : '#f87171'}
+            fontSize="7.5"
+            textAnchor="middle"
+            fontFamily="monospace"
+            fontWeight="bold"
+          >
+            {effectiveEnergy > 0 ? `+${effectiveEnergy}` : effectiveEnergy} eV/atom
+          </text>
+          <text x="190" y="172" fill="#64748b" fontSize="6.5" textAnchor="middle" fontFamily="monospace">
+            0.0 eV baseline
+          </text>
+        </svg>
       </div>
 
       <div className="demo-control-deck">
@@ -506,7 +542,7 @@ export function CrystalLatticeDemo() {
             </button>
           )}
 
-          <span style={{ fontSize: '11px', color: '#94a3b8', marginLeft: 'auto' }}>
+          <span style={{ fontSize: '11px', color: '#94a3b8', marginLeft: 'auto', fontFamily: 'monospace' }}>
             {current.formula}
           </span>
         </div>

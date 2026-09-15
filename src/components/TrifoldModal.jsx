@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
 import { InteractivePaperChat } from './InteractivePaperChat';
-import { ExternalLink, Award, Sparkles, X, MessageSquareQuote } from 'lucide-react';
+import { ExternalLink, Award, Sparkles, X, MessageSquareQuote, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
@@ -256,7 +256,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
                     className="physical-bridge-card publication-card"
                     title="Read full scientific paper"
                   >
-                    <div className="bridge-icon">📄</div>
+                    <div className="bridge-icon"><FileText size={16} /></div>
                     <div>
                       <strong>Primary Research Publication</strong>
                       <p>Read the complete peer-reviewed paper in {project.award || 'scientific literature'} ↗</p>
