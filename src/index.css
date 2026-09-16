@@ -108,6 +108,29 @@ body {
   gap: 16px;
 }
 
+.unified-header-inner {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.brand-lockup-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.header-demo-oneliner {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--ink-secondary);
+  margin: 0;
+  line-height: 1.45;
+  max-width: 720px;
+}
+
 .header-top-row {
   display: flex;
   justify-content: space-between;
@@ -126,11 +149,11 @@ body {
 .brand-title,
 .gemini-brand-title {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
   letter-spacing: -0.02em;
   color: var(--ink-primary);
-  line-height: 1;
+  line-height: 1.1;
   margin: 0;
 }
 
@@ -341,21 +364,22 @@ body {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   position: relative;
-  overflow: hidden;
-  padding: 12px 0 44px;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 6px 0 40px;
 }
 
 .connected-trifold-stream {
   display: flex;
   align-items: center;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 40px calc(50vw - 560px) 72px;
-  perspective: 2200px;
+  padding: 58px calc(50vw - 630px) 76px;
+  perspective: 2400px;
 }
 
 .connected-trifold-stream::-webkit-scrollbar {
@@ -364,8 +388,8 @@ body {
 
 /* Individual Poster Slot along the horizontal stream */
 .connected-poster-slot {
-  width: 1120px;
-  margin: 0 -24px;
+  width: 1260px;
+  margin: 0 -20px;
   flex-shrink: 0;
   scroll-snap-align: center;
   position: relative;
@@ -373,7 +397,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  perspective: 2000px;
+  perspective: 2200px;
   transform-style: preserve-3d;
   cursor: grab;
   z-index: 2;
@@ -400,9 +424,9 @@ body {
 /* Diffused Tabletop Shadow underneath each standing trifold poster */
 .poster-table-shadow {
   position: absolute;
-  bottom: -30px;
+  bottom: -32px;
   width: 90%;
-  height: 34px;
+  height: 38px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 72%);
   border-radius: 50%;
   pointer-events: none;
@@ -420,7 +444,7 @@ body {
   transform-style: preserve-3d;
   position: relative;
   z-index: 2;
-  min-height: 510px;
+  min-height: 580px;
   transform:
     translateZ(calc(var(--abs-dist, 0) * -150px))
     rotateY(calc(var(--signed-dist, 0) * -12deg))
@@ -431,7 +455,7 @@ body {
 
 /* Symmetrical Foldable Side Flaps showcasing Real-World Use Case Photography */
 .poster-flap {
-  width: 190px;
+  width: 210px;
   flex-shrink: 0;
   transform-style: preserve-3d;
   z-index: 4;
@@ -470,8 +494,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 22px 16px;
-  gap: 12px;
+  padding: 26px 18px;
+  gap: 14px;
 }
 
 .left-flap-surface {
@@ -504,7 +528,7 @@ body {
   align-items: center;
   gap: 3px;
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .flap-index-badge .idx-current {
@@ -522,7 +546,7 @@ body {
 
 .flap-usecase-tag {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -533,7 +557,7 @@ body {
 .flap-usecase-photo-frame {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 274px;
   border-radius: 3px;
   overflow: hidden;
   border: 1px solid #D8D6D0;
@@ -558,56 +582,17 @@ body {
   transform: scale(1.06);
 }
 
-.photo-hover-pill {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background: rgba(17, 17, 17, 0.78);
-  color: #FFFFFF;
-  font-family: var(--font-display);
-  font-size: 8.5px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 3px 7px;
-  border-radius: 100px;
-  backdrop-filter: blur(4px);
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.poster-3d-assembly:hover .photo-hover-pill {
-  opacity: 0;
-}
-
-.flap-stat-overlay {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid var(--border-hairline);
-  padding: 4px 8px;
-  border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-.flap-stat-overlay strong {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink-primary);
-}
-
 .flap-usecase-caption {
   font-family: var(--font-body);
-  font-size: 11px;
-  line-height: 1.42;
+  font-size: 11.5px;
+  line-height: 1.45;
   color: var(--ink-secondary);
   margin: 0;
 }
 
 /* GRAND CENTER PANEL: Houses both Main Editorial Text and Interactive Model */
 .poster-center-grand {
-  width: 740px;
+  width: 840px;
   max-width: 100%;
   z-index: 3;
   transform-style: preserve-3d;
@@ -617,7 +602,7 @@ body {
   background: #FFFFFF;
   border-top: 1px solid #D6D3CC;
   border-bottom: 1px solid #D6D3CC;
-  padding: 36px 38px;
+  padding: 44px 46px;
   height: 100%;
   box-sizing: border-box;
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.07);
@@ -629,7 +614,7 @@ body {
 .center-grand-grid {
   display: grid;
   grid-template-columns: 1fr 1.18fr;
-  gap: 34px;
+  gap: 38px;
   align-items: center;
   height: 100%;
 }
@@ -646,7 +631,7 @@ body {
 /* Editorial Typography inside Center Panel */
 .poster-eyebrow {
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -655,7 +640,7 @@ body {
 
 .poster-headline-grand {
   font-family: var(--font-display);
-  font-size: clamp(22px, 2.2vw, 28px);
+  font-size: clamp(24px, 2.45vw, 31px);
   font-weight: 500;
   line-height: 1.32;
   letter-spacing: -0.018em;

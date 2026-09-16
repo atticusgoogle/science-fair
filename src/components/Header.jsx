@@ -1,56 +1,46 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Layers, LayoutGrid, GitFork } from 'lucide-react';
 
-export function Header({
-  searchTerm,
-  setSearchTerm,
-  selectedCategory,
-  setSelectedCategory,
-  categories
-}) {
+export function Header({ viewMode, setViewMode }) {
   return (
-    <header className="site-header">
-      {/* Translucent background image from Gemini science blog header */}
+    <header className="site-header clean-unified-header">
       <div className="header-bg-image" />
       <div className="header-bg-gradient" />
 
-      <div className="header-inner">
-        {/* Top Masthead Band */}
-        <div className="header-top-row">
-          <div className="brand-lockup">
-            <h1 className="brand-title">Google for Science</h1>
-          </div>
+      <div className="header-inner unified-header-inner">
+        <div className="brand-lockup-col">
+          <h1 className="brand-title">Google for Science</h1>
+          <p className="header-demo-oneliner">
+            An interactive exhibition of Google’s landmark AI breakthroughs — play with live computational models and explore standing trifold displays.
+          </p>
         </div>
 
-        {/* Filter and Search Bar */}
-        <div className="search-filter-row">
-          {/* Category Filter Tabs */}
-          <nav className="category-pills-list" aria-label="Filter exhibits by scientific discipline">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                className={`category-pill ${selectedCategory === cat ? 'selected' : ''}`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </nav>
-
-          {/* Search Input */}
-          <div className="search-input-wrapper">
-            <Search size={14} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search researchers, topics, or models..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-field"
-            />
-            {searchTerm && (
-              <button className="clear-search-btn" onClick={() => setSearchTerm('')} aria-label="Clear search">✕</button>
-            )}
-          </div>
+        {/* View Mode Switcher: Only Sliding Gallery, Tabletop Grid, and Research Lineage */}
+        <div className="view-mode-toggle-group">
+          <button
+            type="button"
+            className={`view-mode-btn ${viewMode === 'promenade' ? 'active' : ''}`}
+            onClick={() => setViewMode('promenade')}
+          >
+            <Layers size={13} />
+            <span>Sliding Gallery</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+          >
+            <LayoutGrid size={13} />
+            <span>Tabletop Grid</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn ${viewMode === 'lineage' ? 'active' : ''}`}
+            onClick={() => setViewMode('lineage')}
+          >
+            <GitFork size={13} />
+            <span>Research Lineage</span>
+          </button>
         </div>
       </div>
     </header>

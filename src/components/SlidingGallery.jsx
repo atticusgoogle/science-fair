@@ -200,7 +200,7 @@ export function SlidingGallery({ projects, onSelectProject }) {
       const effectiveOffset = Math.abs(rawPixelOffset) < 12 ? 0 : rawPixelOffset;
 
       // Normalize distance relative to slot spacing (-1 to +1 range for adjacent posters)
-      const normalizedOffset = effectiveOffset / 1060;
+      const normalizedOffset = effectiveOffset / 1180;
       const signedDist = Math.max(-1.15, Math.min(1.15, normalizedOffset));
       const absDist = Math.min(1, Math.abs(signedDist));
 
@@ -466,7 +466,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
                         className="flap-usecase-img"
                         loading="lazy"
                       />
-                      <span className="photo-hover-pill">Hover for color</span>
                     </div>
 
                     <p className="flap-usecase-caption">
@@ -526,9 +525,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
                         className="flap-usecase-img"
                         loading="lazy"
                       />
-                      <div className="flap-stat-overlay">
-                        <strong>{valueData.useCaseRight.stat}</strong>
-                      </div>
                     </div>
 
                     <p className="flap-usecase-caption">

@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { PROJECTS_DATA } from './data/projectsData';
 import { Header } from './components/Header';
 import { TrifoldCard } from './components/TrifoldCard';
 import { TrifoldModal } from './components/TrifoldModal';
 import { SlidingGallery } from './components/SlidingGallery';
-import { Layers, LayoutGrid, GitFork } from 'lucide-react';
 import { ResearchLineageView } from './components/ResearchLineageView';
 
 export default function App() {
@@ -20,8 +19,6 @@ export default function App() {
     }
     return null;
   });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Breakthroughs');
   const [openChatInitially, setOpenChatInitially] = useState(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -46,82 +43,17 @@ export default function App() {
     setOpenChatInitially(!!options.openChat);
   };
 
-  // Extract unique categories
-  const categories = useMemo(() => {
-    return ['All Breakthroughs', 'Biomolecular & Health', 'Climate & Earth', 'Materials & Energy', 'Logic & Mathematics'];
-  }, []);
-
-  // Filter projects by search and category
-  const filteredProjects = useMemo(() => {
-    return PROJECTS_DATA.filter((proj) => {
-      const matchesCategory =
-        selectedCategory === 'All Breakthroughs' || proj.category === selectedCategory;
-
-      const term = searchTerm.toLowerCase().trim();
-      const matchesSearch =
-        !term ||
-        proj.title.toLowerCase().includes(term) ||
-        proj.subtitle.toLowerCase().includes(term) ||
-        proj.researcher.name.toLowerCase().includes(term) ||
-        proj.leftPanel.question.toLowerCase().includes(term) ||
-        proj.centerPanel.methodology.toLowerCase().includes(term);
-
-      return matchesCategory && matchesSearch;
-    });
-  }, [searchTerm, selectedCategory]);
-
   return (
     <div className="science-fair-app">
       {/* Top Header & Navigation */}
       <Header
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        categories={categories}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
 
       {/* Main Exhibition Floor Content */}
       <main className="fair-main-content">
         <section className="trifold-wall-section">
-          <div className="section-intro-bar">
-            <div className="intro-left">
-              <span className="count-label">
-                {viewMode === 'lineage'
-                  ? 'Constellation of Discovery'
-                  : `${filteredProjects.length} Research Breakthroughs`}
-              </span>
-            </div>
-
-            {/* View Mode Switcher: Promenade vs Grid vs Lineage */}
-            <div className="view-mode-toggle-group">
-              <button
-                className={`view-mode-btn ${viewMode === 'promenade' ? 'active' : ''}`}
-                onClick={() => setViewMode('promenade')}
-                title="Sliding Gallery View: Eye-catching questions & live interactive models"
-              >
-                <Layers size={13} />
-                <span>Sliding Gallery</span>
-              </button>
-              <button
-                className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                onClick={() => setViewMode('grid')}
-                title="Tabletop Grid View: 3D standing paperboard trifolds"
-              >
-                <LayoutGrid size={13} />
-                <span>Tabletop Grid</span>
-              </button>
-              <button
-                className={`view-mode-btn ${viewMode === 'lineage' ? 'active' : ''}`}
-                onClick={() => setViewMode('lineage')}
-                title="Research Lineage: Follow curiosity rabbit holes across Google research"
-              >
-                <GitFork size={13} />
-                <span>Research Lineage</span>
-              </button>
-            </div>
-          </div>
-
           {viewMode === 'lineage' ? (
             <ResearchLineageView
               onOpenProjectModal={(projectId) => {
@@ -129,21 +61,14 @@ export default function App() {
                 if (proj) handleSelectProject(proj);
               }}
             />
-          ) : filteredProjects.length === 0 ? (
-            <div className="empty-results-box">
-              <p>No research projects matched "{searchTerm}".</p>
-              <button className="reset-filter-btn" onClick={() => { setSearchTerm(''); setSelectedCategory('All Breakthroughs'); }}>
-                Reset Filters
-              </button>
-            </div>
           ) : viewMode === 'promenade' ? (
             <SlidingGallery
-              projects={filteredProjects}
+              projects={PROJECTS_DATA}
               onSelectProject={handleSelectProject}
             />
           ) : (
             <div className="trifold-cards-grid">
-              {filteredProjects.map((project) => (
+              {PROJECTS_DATA.map((project) => (
                 <TrifoldCard
                   key={project.id}
                   project={project}
