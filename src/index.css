@@ -378,7 +378,8 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 28px calc(50vw - 570px) 22px;
+  padding: 64px calc(50vw - 570px) 64px;
+  margin: -24px 0 -20px;
   perspective: 2200px;
 }
 
@@ -444,7 +445,7 @@ body {
   transform-style: preserve-3d;
   position: relative;
   z-index: 2;
-  min-height: 500px;
+  min-height: 475px;
   transform:
     translateZ(calc(var(--abs-dist, 0) * -150px))
     rotateY(calc(var(--signed-dist, 0) * -12deg))
@@ -559,7 +560,7 @@ body {
 .flap-usecase-photo-frame {
   position: relative;
   width: 100%;
-  height: 274px;
+  height: 215px;
   border-radius: 3px;
   overflow: hidden;
   border: 1px solid #D8D6D0;
@@ -722,129 +723,26 @@ body {
   padding: 8px;
 }
 
-/* Bottom-Right "Talk to this Paper" CTA button inside Trifold */
-.trifold-bottom-right-cta {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: auto;
-}
-
-.trifold-talk-paper-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border-radius: 100px;
-  background: #121316;
-  color: #FFFFFF;
-  border: 1px solid #2A2E39;
-  font-family: var(--font-display);
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.trifold-talk-paper-btn:hover {
-  background: #000000;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-}
-
-/* Horizontal Scroll Affordance Bar & Interactive Exhibit Navigator */
+/* Horizontal Scroll Affordance Bar (Clean Pill Box) */
 .sliding-gallery-scroll-bar {
-  max-width: 660px;
-  margin: 10px auto 0;
+  width: fit-content;
+  margin: 14px auto 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  justify-content: center;
   background: #FFFFFF;
   border: 1px solid var(--border-hairline);
   border-radius: 100px;
-  padding: 7px 12px;
+  padding: 9px 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-}
-
-.scroll-nav-arrow-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border-hairline);
-  background: var(--bg-subtle);
-  color: var(--ink-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.scroll-nav-arrow-btn:hover:not(:disabled) {
-  background: var(--ink-primary);
-  color: #FFFFFF;
-  border-color: var(--ink-primary);
-}
-
-.scroll-nav-arrow-btn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.scroll-bar-center-group {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 .scroll-hint-text {
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--ink-secondary);
-  letter-spacing: 0.01em;
-}
-
-.scroll-dots-track {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.scroll-dot-pill {
-  width: 7px;
-  height: 7px;
-  border-radius: 100px;
-  background: #D4D2CB;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-dot-pill:hover {
-  background: #8C8980;
-}
-
-.scroll-dot-pill.active {
-  width: 22px;
-  background: var(--ink-primary);
-}
-
-.scroll-counter-pill {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  background: var(--bg-subtle);
-  padding: 3px 9px;
-  border-radius: 100px;
-  border: 1px solid var(--border-hairline);
+  letter-spacing: 0.015em;
 }
 
 @media (max-width: 1024px) {

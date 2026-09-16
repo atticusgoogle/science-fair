@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
-import { StickyPaperChat } from './StickyPaperChat';
-import { MessageSquareQuote, ChevronLeft, ChevronRight } from 'lucide-react';
 import gsap from 'gsap';
 
 // Value-forward statements + Real-world human use-case photography for the side flaps
@@ -178,7 +176,6 @@ export function SlidingGallery({ projects, onSelectProject }) {
   const hasDragged = useRef(false);
   const isTransitioningOut = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [chatProject, setChatProject] = useState(null);
 
   // Continuously compute each poster's distance from viewport center
   // and drive its 3D flap folding (--abs-dist, --signed-dist) in real time
@@ -503,24 +500,10 @@ export function SlidingGallery({ projects, onSelectProject }) {
                         </div>
                       </div>
 
-                      {/* Right Column inside Center Panel: Interactive Computational Model + Bottom-Right Talk to this Paper */}
+                      {/* Right Column inside Center Panel: Interactive Computational Model */}
                       <div className="center-model-col">
                         <div className="center-model-viewport">
                           <InteractiveWidget type={project.demoType} project={project} />
-                        </div>
-
-                        <div className="trifold-bottom-right-cta">
-                          <button
-                            type="button"
-                            className="trifold-talk-paper-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setChatProject(project);
-                            }}
-                          >
-                            <MessageSquareQuote size={14} />
-                            <span>Talk to this Paper</span>
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -552,57 +535,10 @@ export function SlidingGallery({ projects, onSelectProject }) {
         })}
       </div>
 
-      {/* Horizontal Scroll Affordance Bar & Interactive Exhibit Navigator */}
+      {/* Horizontal Scroll Affordance Box (Clean without 01/10 or arrow buttons) */}
       <div className="sliding-gallery-scroll-bar">
-        <button
-          type="button"
-          className="scroll-nav-arrow-btn"
-          onClick={() => scrollToPoster(Math.max(0, activeIndex - 1), 'smooth')}
-          disabled={activeIndex === 0}
-          aria-label="Previous exhibit"
-        >
-          <ChevronLeft size={16} />
-        </button>
-
-        <div className="scroll-bar-center-group">
-          <span className="scroll-hint-text">← Scroll or drag horizontally to explore →</span>
-          <div className="scroll-dots-track">
-            {projects.map((p, idx) => (
-              <button
-                key={p.id}
-                type="button"
-                className={`scroll-dot-pill ${idx === activeIndex ? 'active' : ''}`}
-                onClick={() => scrollToPoster(idx, 'smooth')}
-                aria-label={`Go to exhibit ${idx + 1}: ${p.title}`}
-                title={`${String(idx + 1).padStart(2, '0')} — ${p.title}`}
-              />
-            ))}
-          </div>
-          <span className="scroll-counter-pill">
-            {String(activeIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          className="scroll-nav-arrow-btn"
-          onClick={() => scrollToPoster(Math.min(projects.length - 1, activeIndex + 1), 'smooth')}
-          disabled={activeIndex === projects.length - 1}
-          aria-label="Next exhibit"
-        >
-          <ChevronRight size={16} />
-        </button>
+        <span className="scroll-hint-text">← Scroll or drag horizontally to explore →</span>
       </div>
-
-      {/* Slide-Over Chat Drawer opened when clicking "Talk to this Paper" on the trifold */}
-      <StickyPaperChat
-        project={chatProject || projects[activeIndex]}
-        isOpen={!!chatProject}
-        onOpenChange={(open) => {
-          if (!open) setChatProject(null);
-        }}
-        hideFloatingTrigger={true}
-      />
     </div>
   );
 }
