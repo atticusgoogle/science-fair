@@ -2,29 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { MessageSquareQuote, X } from 'lucide-react';
 import { InteractivePaperChat } from './InteractivePaperChat';
 
-export function StickyPaperChat({ project, initialOpen = false }) {
-  const [isOpen, setIsOpen] = useState(initialOpen);
+export function StickyPaperChat({
+  project,
+  initialOpen = false,
+  isOpen: controlledOpen,
+  onOpenChange,
+  hideFloatingTrigger = false
+}) {
+  const [internalOpen, setInternalOpen] = useState(initialOpen);
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : internalOpen;
+
+  const setOpen = (nextVal) => {
+    if (isControlled) {
+      if (onOpenChange) onOpenChange(nextVal);
+    } else {
+      setInternalOpen(nextVal);
+      if (onOpenChange) onOpenChange(nextVal);
+    }
+  };
 
   useEffect(() => {
-    setIsOpen(initialOpen);
-  }, [initialOpen]);
+    if (!isControlled) {
+      setInternalOpen(initialOpen);
+    }
+  }, [initialOpen, isControlled]);
 
   if (!project) return null;
 
   return (
     <>
-      {/* Sticky Side Button on the Right Edge of the Page */}
-      {!isOpen && (
+      {/* Sticky Bottom-Right Trigger Button */}
+      {!isOpen && !hideFloatingTrigger && (
         <button
           type="button"
           className="sticky-paper-chat-trigger"
           onClick={(e) => {
             e.stopPropagation();
-            setIsOpen(true);
+            setOpen(true);
           }}
           aria-label="Talk to this Paper"
         >
-          <MessageSquareQuote size={16} />
+          <MessageSquareQuote size={15} />
           <span>Talk to this Paper</span>
         </button>
       )}
@@ -45,7 +64,7 @@ export function StickyPaperChat({ project, initialOpen = false }) {
             className="sticky-chat-close-btn"
             onClick={(e) => {
               e.stopPropagation();
-              setIsOpen(false);
+              setOpen(false);
             }}
             aria-label="Close chat"
           >

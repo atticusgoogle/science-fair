@@ -4,9 +4,6 @@ import { Layers, LayoutGrid, GitFork } from 'lucide-react';
 export function Header({ viewMode, setViewMode }) {
   return (
     <header className="site-header clean-unified-header">
-      <div className="header-bg-image" />
-      <div className="header-bg-gradient" />
-
       <div className="header-inner unified-header-inner">
         <div className="brand-lockup-col">
           <h1 className="brand-title">Google for Science</h1>

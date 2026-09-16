@@ -366,7 +366,7 @@ body {
   position: relative;
   overflow-x: hidden;
   overflow-y: visible;
-  padding: 6px 0 40px;
+  padding: 4px 0 32px;
 }
 
 .connected-trifold-stream {
@@ -378,8 +378,8 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 58px calc(50vw - 630px) 76px;
-  perspective: 2400px;
+  padding: 28px calc(50vw - 570px) 22px;
+  perspective: 2200px;
 }
 
 .connected-trifold-stream::-webkit-scrollbar {
@@ -388,8 +388,8 @@ body {
 
 /* Individual Poster Slot along the horizontal stream */
 .connected-poster-slot {
-  width: 1260px;
-  margin: 0 -20px;
+  width: 1140px;
+  margin: 0 -46px;
   flex-shrink: 0;
   scroll-snap-align: center;
   position: relative;
@@ -397,7 +397,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  perspective: 2200px;
+  perspective: 2000px;
   transform-style: preserve-3d;
   cursor: grab;
   z-index: 2;
@@ -424,9 +424,9 @@ body {
 /* Diffused Tabletop Shadow underneath each standing trifold poster */
 .poster-table-shadow {
   position: absolute;
-  bottom: -32px;
+  bottom: -26px;
   width: 90%;
-  height: 38px;
+  height: 32px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 72%);
   border-radius: 50%;
   pointer-events: none;
@@ -444,7 +444,7 @@ body {
   transform-style: preserve-3d;
   position: relative;
   z-index: 2;
-  min-height: 580px;
+  min-height: 500px;
   transform:
     translateZ(calc(var(--abs-dist, 0) * -150px))
     rotateY(calc(var(--signed-dist, 0) * -12deg))
@@ -455,7 +455,7 @@ body {
 
 /* Symmetrical Foldable Side Flaps showcasing Real-World Use Case Photography */
 .poster-flap {
-  width: 210px;
+  width: 195px;
   flex-shrink: 0;
   transform-style: preserve-3d;
   z-index: 4;
@@ -494,8 +494,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 26px 18px;
-  gap: 14px;
+  padding: 22px 16px;
+  gap: 12px;
 }
 
 .left-flap-surface {
@@ -519,8 +519,10 @@ body {
   padding-bottom: 8px;
 }
 
-.flap-header-row.right {
-  justify-content: flex-end;
+.flap-header-row.right-align-spacer {
+  border-bottom: none;
+  height: 15px;
+  padding-bottom: 8px;
 }
 
 .flap-index-badge {
@@ -592,7 +594,7 @@ body {
 
 /* GRAND CENTER PANEL: Houses both Main Editorial Text and Interactive Model */
 .poster-center-grand {
-  width: 840px;
+  width: 750px;
   max-width: 100%;
   z-index: 3;
   transform-style: preserve-3d;
@@ -602,7 +604,7 @@ body {
   background: #FFFFFF;
   border-top: 1px solid #D6D3CC;
   border-bottom: 1px solid #D6D3CC;
-  padding: 44px 46px;
+  padding: 34px 36px;
   height: 100%;
   box-sizing: border-box;
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.07);
@@ -614,8 +616,8 @@ body {
 .center-grand-grid {
   display: grid;
   grid-template-columns: 1fr 1.18fr;
-  gap: 38px;
-  align-items: center;
+  gap: 32px;
+  align-items: stretch;
   height: 100%;
 }
 
@@ -624,14 +626,14 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  padding: 6px 0;
-  gap: 20px;
+  padding: 4px 0;
+  gap: 18px;
 }
 
 /* Editorial Typography inside Center Panel */
 .poster-eyebrow {
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -640,7 +642,7 @@ body {
 
 .poster-headline-grand {
   font-family: var(--font-display);
-  font-size: clamp(24px, 2.45vw, 31px);
+  font-size: clamp(21px, 2.15vw, 27px);
   font-weight: 500;
   line-height: 1.32;
   letter-spacing: -0.018em;
@@ -695,9 +697,11 @@ body {
 /* Interactive Model Column inside Center Panel */
 .center-model-col {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .center-model-viewport {
@@ -716,6 +720,131 @@ body {
   box-shadow: none;
   border: none;
   padding: 8px;
+}
+
+/* Bottom-Right "Talk to this Paper" CTA button inside Trifold */
+.trifold-bottom-right-cta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: auto;
+}
+
+.trifold-talk-paper-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: #121316;
+  color: #FFFFFF;
+  border: 1px solid #2A2E39;
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.trifold-talk-paper-btn:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* Horizontal Scroll Affordance Bar & Interactive Exhibit Navigator */
+.sliding-gallery-scroll-bar {
+  max-width: 660px;
+  margin: 10px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-hairline);
+  border-radius: 100px;
+  padding: 7px 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.scroll-nav-arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-subtle);
+  color: var(--ink-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.scroll-nav-arrow-btn:hover:not(:disabled) {
+  background: var(--ink-primary);
+  color: #FFFFFF;
+  border-color: var(--ink-primary);
+}
+
+.scroll-nav-arrow-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.scroll-bar-center-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.scroll-hint-text {
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  letter-spacing: 0.01em;
+}
+
+.scroll-dots-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scroll-dot-pill {
+  width: 7px;
+  height: 7px;
+  border-radius: 100px;
+  background: #D4D2CB;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-dot-pill:hover {
+  background: #8C8980;
+}
+
+.scroll-dot-pill.active {
+  width: 22px;
+  background: var(--ink-primary);
+}
+
+.scroll-counter-pill {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  background: var(--bg-subtle);
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: 1px solid var(--border-hairline);
 }
 
 @media (max-width: 1024px) {
@@ -4183,36 +4312,36 @@ body {
 }
 
 /* ==========================================================================
-   STICKY RIGHT-SIDE "TALK TO THIS PAPER" BUTTON & SLIDE-OVER CHAT DRAWER
+   STICKY BOTTOM-RIGHT "TALK TO THIS PAPER" BUTTON & SLIDE-OVER CHAT DRAWER
    ========================================================================== */
 .sticky-paper-chat-trigger {
   position: fixed;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 28px;
+  bottom: 28px;
+  top: auto;
+  transform: none;
   z-index: 2100;
   background: #121316;
   color: #FFFFFF;
   border: 1px solid #2A2E39;
-  border-right: none;
-  border-radius: 8px 0 0 8px;
-  padding: 13px 16px;
+  border-radius: 100px;
+  padding: 11px 18px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.015em;
-  box-shadow: -6px 8px 28px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
   cursor: pointer;
-  transition: padding-right 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .sticky-paper-chat-trigger:hover {
-  padding-right: 22px;
+  transform: translateY(-2px);
   background: #000000;
-  box-shadow: -8px 10px 32px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
 }
 
 .sticky-paper-chat-drawer {
