@@ -354,7 +354,7 @@ body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding: 40px calc(50vw - 510px) 72px;
+  padding: 40px calc(50vw - 560px) 72px;
   perspective: 2200px;
 }
 
@@ -364,7 +364,7 @@ body {
 
 /* Individual Poster Slot along the horizontal stream */
 .connected-poster-slot {
-  width: 1020px;
+  width: 1120px;
   margin: 0 -24px;
   flex-shrink: 0;
   scroll-snap-align: center;
@@ -420,7 +420,7 @@ body {
   transform-style: preserve-3d;
   position: relative;
   z-index: 2;
-  min-height: 500px;
+  min-height: 510px;
   transform:
     translateZ(calc(var(--abs-dist, 0) * -150px))
     rotateY(calc(var(--signed-dist, 0) * -12deg))
@@ -429,27 +429,37 @@ body {
   transition: transform 0.08s linear, opacity 0.08s linear;
 }
 
-/* Symmetrical Smaller Foldable Side Flaps */
+/* Symmetrical Foldable Side Flaps showcasing Real-World Use Case Photography */
 .poster-flap {
-  width: 120px;
+  width: 190px;
   flex-shrink: 0;
   transform-style: preserve-3d;
   z-index: 4;
-  transition: transform 0.08s linear, box-shadow 0.15s ease;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.38s ease;
 }
 
-/* Left Flap: Angled open (42deg) when centered, continuously folds inward shut (105deg) on scroll */
+/* Left Flap: Folded inward (46deg) by default so Center Panel is focus; unfolds wider (22deg) on hover */
 .poster-flap.left {
   transform-origin: right center;
-  transform: rotateY(calc(42deg + var(--abs-dist, 0) * 63deg));
+  transform: rotateY(calc(46deg + var(--abs-dist, 0) * 59deg));
   box-shadow: -14px 16px 34px rgba(0, 0, 0, 0.09);
 }
 
-/* Right Flap: Angled open (-42deg) when centered, continuously folds inward shut (-105deg) on scroll */
+/* Right Flap: Folded inward (-46deg) by default; unfolds wider (-22deg) on hover */
 .poster-flap.right {
   transform-origin: left center;
-  transform: rotateY(calc(-42deg - var(--abs-dist, 0) * 63deg));
+  transform: rotateY(calc(-46deg - var(--abs-dist, 0) * 59deg));
   box-shadow: 14px 16px 34px rgba(0, 0, 0, 0.09);
+}
+
+.connected-poster-slot.is-active .poster-3d-assembly:hover .poster-flap.left {
+  transform: rotateY(22deg);
+  box-shadow: -18px 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.connected-poster-slot.is-active .poster-3d-assembly:hover .poster-flap.right {
+  transform: rotateY(-22deg);
+  box-shadow: 18px 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Foldable Flap Paperboard Surfaces */
@@ -459,8 +469,9 @@ body {
   border: 1px solid #D6D3CC;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 28px 18px;
+  justify-content: space-between;
+  padding: 22px 16px;
+  gap: 12px;
 }
 
 .left-flap-surface {
@@ -475,12 +486,25 @@ body {
   background: linear-gradient(270deg, #FFFFFF 0%, #FBFBF9 88%, #EBE8E0 100%);
 }
 
+.flap-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-bottom: 1px solid var(--border-hairline);
+  padding-bottom: 8px;
+}
+
+.flap-header-row.right {
+  justify-content: flex-end;
+}
+
 .flap-index-badge {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 11.5px;
 }
 
 .flap-index-badge .idx-current {
@@ -496,9 +520,94 @@ body {
   color: var(--ink-muted);
 }
 
+.flap-usecase-tag {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+
+/* Documentary Photography Frame inside Flaps (B&W until hover) */
+.flap-usecase-photo-frame {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #D8D6D0;
+  background: #14171F;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.15);
+}
+
+.flap-usecase-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%) contrast(1.12);
+  transform: scale(1);
+  transition: filter 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hovering over the trifold or flap blooms B&W use-case images into vivid full color */
+.poster-3d-assembly:hover .flap-usecase-img,
+.poster-flap:hover .flap-usecase-img {
+  filter: grayscale(0%) contrast(1.02);
+  transform: scale(1.06);
+}
+
+.photo-hover-pill {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(17, 17, 17, 0.78);
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  border-radius: 100px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.poster-3d-assembly:hover .photo-hover-pill {
+  opacity: 0;
+}
+
+.flap-stat-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-hairline);
+  padding: 4px 8px;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.flap-stat-overlay strong {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.flap-usecase-caption {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.42;
+  color: var(--ink-secondary);
+  margin: 0;
+}
+
 /* GRAND CENTER PANEL: Houses both Main Editorial Text and Interactive Model */
 .poster-center-grand {
-  width: 780px;
+  width: 740px;
   max-width: 100%;
   z-index: 3;
   transform-style: preserve-3d;
@@ -1163,6 +1272,19 @@ body {
 
 .trifold-full-spread.unfolded .trifold-panel.right-panel {
   transform: rotateY(-12deg);
+  box-shadow: 10px 14px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* GSAP-driven 3D unfolding spread */
+.trifold-full-spread.gsap-driven,
+.trifold-full-spread.gsap-driven .trifold-panel.left-panel,
+.trifold-full-spread.gsap-driven .trifold-panel.right-panel {
+  transition: box-shadow 0.4s ease;
+}
+.trifold-full-spread.gsap-driven .trifold-panel.left-panel {
+  box-shadow: -10px 14px 28px rgba(0, 0, 0, 0.08);
+}
+.trifold-full-spread.gsap-driven .trifold-panel.right-panel {
   box-shadow: 10px 14px 28px rgba(0, 0, 0, 0.08);
 }
 

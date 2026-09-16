@@ -1,27 +1,120 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { InteractiveWidget } from './InteractiveDemos';
 import { StickyPaperChat } from './StickyPaperChat';
 import { Award, Sparkles, X, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import gsap from 'gsap';
 
 export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
-  const [isUnfolded, setIsUnfolded] = useState(false);
+  const overlayRef = useRef(null);
+  const spreadRef = useRef(null);
+  const leftPanelRef = useRef(null);
+  const centerPanelRef = useRef(null);
+  const rightPanelRef = useRef(null);
+  const isClosing = useRef(false);
+
+  // Smooth GSAP fold-shut exit animation before calling onClose
+  const handleSmoothClose = useCallback(() => {
+    if (isClosing.current) return;
+    isClosing.current = true;
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        onClose();
+      }
+    });
+
+    // Fold wings shut over the center panel and recede smoothly
+    tl.to(leftPanelRef.current, {
+      rotationY: 78,
+      opacity: 0.7,
+      duration: 0.38,
+      ease: 'power3.inOut'
+    }, 0)
+    .to(rightPanelRef.current, {
+      rotationY: -78,
+      opacity: 0.7,
+      duration: 0.38,
+      ease: 'power3.inOut'
+    }, 0)
+    .to(spreadRef.current, {
+      scale: 0.86,
+      z: -180,
+      rotationX: 4,
+      opacity: 0,
+      duration: 0.44,
+      ease: 'power3.inOut'
+    }, 0.06)
+    .to(overlayRef.current, {
+      opacity: 0,
+      duration: 0.38,
+      ease: 'power2.out'
+    }, 0.12);
+  }, [onClose]);
 
   useEffect(() => {
-    // Trigger smooth 3D unfolding animation right after mount
-    const timer = setTimeout(() => setIsUnfolded(true), 60);
+    // GSAP Entrance Choreography: Smooth, gradual, Creative-Lab 3D Origami Unfold
+    const overlay = overlayRef.current;
+    const spread = spreadRef.current;
+    const leftPanel = leftPanelRef.current;
+    const centerPanel = centerPanelRef.current;
+    const rightPanel = rightPanelRef.current;
+
+    const sectionBlocks = spread.querySelectorAll('.section-block, .pinned-header-strip, .method-summary-box, .center-interactive-stage, .specs-grid, .researcher-quote-box, .publication-card, .award-ribbon-pill');
+
+    // Initial folded state
+    gsap.set(overlay, { opacity: 0 });
+    gsap.set(spread, { scale: 0.88, z: -160, rotationX: 5 });
+    gsap.set(leftPanel, { rotationY: 82, transformOrigin: 'right center', opacity: 0.5 });
+    gsap.set(rightPanel, { rotationY: -82, transformOrigin: 'left center', opacity: 0.5 });
+    gsap.set(centerPanel, { opacity: 0.85 });
+    gsap.set(sectionBlocks, { y: 18, opacity: 0 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    // 1. Backdrop fade-in + Board dolly forward
+    tl.to(overlay, { opacity: 1, duration: 0.42 }, 0)
+      .to(spread, {
+        scale: 1,
+        z: 0,
+        rotationX: 0,
+        duration: 0.82,
+        ease: 'expo.out'
+      }, 0.04)
+      .to(centerPanel, { opacity: 1, duration: 0.45 }, 0.08)
+      // 2. Gradual, elegant unfolding of Left and Right wings
+      .to(leftPanel, {
+        rotationY: 18,
+        opacity: 1,
+        duration: 0.88,
+        ease: 'power3.out'
+      }, 0.14)
+      .to(rightPanel, {
+        rotationY: -18,
+        opacity: 1,
+        duration: 0.88,
+        ease: 'power3.out'
+      }, 0.14)
+      // 3. Staggered reveal of interior exhibition cards
+      .to(sectionBlocks, {
+        y: 0,
+        opacity: 1,
+        duration: 0.55,
+        stagger: 0.035,
+        ease: 'power2.out'
+      }, 0.28);
 
     // Keyboard escape to close
     const handleKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleSmoothClose();
     };
     window.addEventListener('keydown', handleKey);
 
     return () => {
-      clearTimeout(timer);
+      tl.kill();
       window.removeEventListener('keydown', handleKey);
     };
-  }, [onClose]);
+  }, [handleSmoothClose]);
 
   const triggerCelebration = () => {
     confetti({
@@ -32,11 +125,11 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
   };
 
   return (
-    <div className="trifold-modal-overlay" onClick={onClose}>
+    <div ref={overlayRef} className="trifold-modal-overlay" onClick={handleSmoothClose}>
       {/* Fixed Persistent Top-Right Close Button */}
       <button
         className="modal-fixed-close-btn"
-        onClick={onClose}
+        onClick={handleSmoothClose}
         aria-label="Close exhibit"
         title="Close exhibit"
       >
@@ -47,10 +140,10 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
       <StickyPaperChat project={project} initialOpen={initialOpenChat} />
 
       <div className="trifold-modal-viewport" onClick={(e) => e.stopPropagation()}>
-        {/* 3D Hinged Trifold Spread */}
-        <div className={`trifold-full-spread ${isUnfolded ? 'unfolded' : 'folded'}`}>
+        {/* 3D Hinged Trifold Spread controlled by GSAP */}
+        <div ref={spreadRef} className="trifold-full-spread gsap-driven">
           {/* ================= LEFT PANEL ================= */}
-          <div className="trifold-panel left-panel">
+          <div ref={leftPanelRef} className="trifold-panel left-panel">
             <div className="panel-inner-paper">
               <div className="section-block">
                 <span className="panel-eyebrow">The researcher</span>
@@ -92,7 +185,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
           </div>
 
           {/* ================= CENTER PANEL ================= */}
-          <div className="trifold-panel center-panel">
+          <div ref={centerPanelRef} className="trifold-panel center-panel">
             <div className="panel-inner-paper">
               {/* Clean Title Header Strip */}
               <div className="pinned-header-strip">
@@ -136,7 +229,7 @@ export function TrifoldModal({ project, initialOpenChat = false, onClose }) {
           </div>
 
           {/* ================= RIGHT PANEL ================= */}
-          <div className="trifold-panel right-panel">
+          <div ref={rightPanelRef} className="trifold-panel right-panel">
             <div className="panel-inner-paper">
               {/* Award Line */}
               {project.award && (
